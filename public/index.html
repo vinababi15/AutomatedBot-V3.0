@@ -10,14 +10,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
 
   <style>
-    /* ===== BASE ===== */
     body {
       background: #000;
       color: #e0e0e0;
       font-family: 'Poppins', sans-serif;
     }
 
-    /* ===== NAVBAR ===== */
     .navbar {
       background: rgba(0,0,0,0.9);
       border-bottom: 1px solid #222;
@@ -41,7 +39,6 @@
       background: #111;
     }
 
-    /* ===== CARDS ===== */
     .glass-card {
       background: rgba(0,0,0,0.75);
       border: 1px solid #222;
@@ -62,7 +59,6 @@
       font-size: 14px;
     }
 
-    /* ===== INPUTS ===== */
     input,
     textarea {
       background-color: rgba(0,0,0,0.6) !important;
@@ -83,17 +79,14 @@
       box-shadow: none;
     }
 
-    /* ===== GIF BACKGROUND (PRESERVED) ===== */
     #json-data {
       min-height: 200px;
       background-image: url('https://media1.giphy.com/media/v1.Y2lkPTZjMDliOTUyYjZuN2F1ZTZwdWE5Mno0a2k0d2s5YnV2eGhtcnRiZzlmZzlnZjJxbSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/YZX4FWwOJTK5W/giphy.gif');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      backdrop-filter: brightness(0.8);
     }
 
-    /* ===== BUTTONS ===== */
     .btn-primary {
       background: #111;
       border: 1px solid #333;
@@ -116,7 +109,6 @@
       border-top: 1px solid #222;
     }
 
-    /* ===== FOOTER ===== */
     .footer {
       text-align: center;
       color: #777;
@@ -128,89 +120,112 @@
 
 <body>
 
-  <nav class="navbar navbar-expand-lg navbar-dark px-4 my-3">
-    <a class="navbar-brand" href="#">Messenger Automated Bot</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Features</a>
-          <div class="dropdown-menu">
-            <a class="dropdown-item" href="https://www.facebook.com/notfound500" target="_blank">Admin</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="/step_by_step_guide">Guide</a>
-          </div>
-        </li>
-        <li class="nav-item"><a class="nav-link" href="online_user">Active</a></li>
-      </ul>
-    </div>
-  </nav>
+<nav class="navbar navbar-expand-lg navbar-dark px-4 my-3">
+  <a class="navbar-brand" href="#">Messenger Automated Bot</a>
 
-  <div class="container">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+    <span class="navbar-toggler-icon"></span>
+  </button>
 
-    <div class="glass-card">
-      <h1>APPSTATE</h1>
-      <form id="json-form" onsubmit="submitForm(event)">
-        <textarea id="json-data" class="form-control" placeholder="Paste your AppState here..."></textarea>
-      </form>
-    </div>
+  <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
 
-    <div class="glass-card">
-      <h1>TERMS</h1>
-      <p>* Bot stays online until password changes.</p>
-      <p>* Never share cookies.</p>
-      <p>* Use dummy accounts.</p>
-    </div>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Features</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="https://www.facebook.com/notfound500" target="_blank">Admin</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="/step_by_step_guide">Guide</a>
+        </div>
+      </li>
 
-    <div class="glass-card" id="listOfCommands">
-      <h1>COMMANDS</h1>
-      <button class="btn btn-primary" onclick="selectAllCommands()">Select all commands</button>
-      <hr>
-    </div>
+      <li class="nav-item"><a class="nav-link" href="online_user">Active</a></li>
+    </ul>
+  </div>
+</nav>
 
-    <div class="glass-card" id="listOfCommandsEvent">
-      <h1>EVENTS</h1>
-      <button class="btn btn-primary" onclick="selectAllEvents()">Select all events</button>
-      <hr>
-    </div>
+<div class="container">
 
-    <div class="glass-card" id="prefixOfCommands">
-      <h1>PREFIX</h1>
-      <input type="text" id="inputOfPrefix" class="form-control" placeholder="/">
-      <hr>
-    </div>
+  <div class="glass-card">
+    <h1>APPSTATE</h1>
+    <form id="json-form" onsubmit="submitForm(event)">
+      <textarea id="json-data" class="form-control" placeholder="Paste your AppState here..."></textarea>
+    </form>
+  </div>
 
-    <div class="glass-card" id="adminOfCommands">
-      <h1>ADMIN UID</h1>
-      <input type="text" id="inputOfAdmin" class="form-control">
-      <hr>
-    </div>
+  <div class="glass-card">
+    <h1>TERMS</h1>
+    <p>* Bot stays online until password changes.</p>
+    <p>* Never share cookies.</p>
+    <p>* Use dummy accounts.</p>
+  </div>
 
-    <label class="d-flex align-items-center my-3">
-      <input type="checkbox" id="agreeCheckbox" class="mr-2"> I agree to the terms
+  <!-- COMMANDS -->
+  <div class="glass-card" id="listOfCommands">
+    <h1>COMMANDS</h1>
+
+    <p style="font-size:13px; color:#aaa;">
+      Select only the commands you want to enable.
+    </p>
+
+    <label style="font-size:13px; cursor:pointer;">
+      <input type="checkbox" onclick="this.checked && selectAllCommands()"> Select all commands
     </label>
 
-    <button class="btn btn-primary btn-block" id="submitButton" onclick="State()" disabled>
-      Submit
-    </button>
-
-    <div id="result" class="text-center mt-4" style="display:none;"></div>
+    <hr>
   </div>
 
-  <div class="footer">
-    <p>Time: <span id="time"></span></p>
-    <p>Ping: <span id="ping"></span></p>
+  <!-- EVENTS -->
+  <div class="glass-card" id="listOfCommandsEvent">
+    <h1>EVENTS</h1>
+
+    <p style="font-size:13px; color:#aaa;">
+      Select event-based commands manually or enable all.
+    </p>
+
+    <label style="font-size:13px; cursor:pointer;">
+      <input type="checkbox" onclick="this.checked && selectAllEvents()"> Select all events
+    </label>
+
+    <hr>
   </div>
 
-  <!-- SCRIPTS (UNCHANGED) -->
-  <script src="script.js"></script>
-  <script src="vern.js"></script>
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <div class="glass-card" id="prefixOfCommands">
+    <h1>PREFIX</h1>
+    <input type="text" id="inputOfPrefix" class="form-control" placeholder="/">
+    <hr>
+  </div>
+
+  <div class="glass-card" id="adminOfCommands">
+    <h1>ADMIN UID</h1>
+    <input type="text" id="inputOfAdmin" class="form-control">
+    <hr>
+  </div>
+
+  <label class="d-flex align-items-center my-3">
+    <input type="checkbox" id="agreeCheckbox" class="mr-2">
+    I agree to the terms
+  </label>
+
+  <button class="btn btn-primary btn-block" id="submitButton" onclick="State()" disabled>
+    Submit
+  </button>
+
+  <div id="result" class="text-center mt-4" style="display:none;"></div>
+</div>
+
+<div class="footer">
+  <p>Time: <span id="time"></span></p>
+  <p>Ping: <span id="ping"></span></p>
+</div>
+
+<!-- LOGIC FILES (UNCHANGED) -->
+<script src="script.js"></script>
+<script src="vern.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 </body>
 </html>
