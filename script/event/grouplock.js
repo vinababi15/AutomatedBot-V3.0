@@ -15,6 +15,12 @@ const LIKE_LIMIT = 5;        // messages to trigger kick
 const WARNING_THRESHOLD = 3; // messages to warn
 const LIKE_INTERVAL = 4000;  // ms window
 
+module.exports.config = {
+  name: "grouplock",
+  version: "2.0.0",
+  description: "Locks group name, nicknames, auto-reacts, warns and kicks like-message spammers, auto-nicks bot"
+};
+
 /* Queue helper */
 async function enqueue(threadID, action) {
   if (!actionQueues.has(threadID)) actionQueues.set(threadID, Promise.resolve());
@@ -30,11 +36,6 @@ async function enqueue(threadID, action) {
     )
   );
 }
-
-module.exports.config = {
-  name: "grouplock",
-  version: "1.9.0"
-};
 
 module.exports.handleEvent = async function ({ api, event }) {
   const threadID = event.threadID;
@@ -95,10 +96,11 @@ module.exports.handleEvent = async function ({ api, event }) {
     }
   }
 
+  // --- GROUP LOCK / NICKNAME LOCK ---
   const lock = groupLocks.get(threadID);
   if (!lock) return;
 
-  // --- GROUP NAME LOCK ---
+  // GROUP NAME AUTO-REVERT
   if (event.logMessageType === "log:thread-name" && lock.groupName) {
     const info = await api.getThreadInfo(threadID);
     if (info.threadName !== lock.groupName) {
@@ -106,14 +108,14 @@ module.exports.handleEvent = async function ({ api, event }) {
     }
   }
 
-  // --- NICKNAME LOCK ---
+  // NICKNAME AUTO-REVERT
   if (event.logMessageType === "log:user-nickname" && lock.nickname) {
     enqueue(threadID, () =>
       api.changeNickname(lock.nickname, threadID, event.logMessageData.participant_id)
     );
   }
 
-  // --- AUTO NICK FOR NEW MEMBERS ---
+  // AUTO SET NICKNAME FOR NEW MEMBERS
   if (event.logMessageType === "log:subscribe" && lock.nickname) {
     for (const user of event.logMessageData.addedParticipants) {
       enqueue(threadID, () =>
@@ -121,50 +123,4 @@ module.exports.handleEvent = async function ({ api, event }) {
       );
     }
   }
-};
-
-module.exports.run = async function ({ api, event, args }) {
-  const threadID = event.threadID;
-  const cmd = args.shift()?.toLowerCase();
-
-  if (cmd === "name") {
-    const name = args.join(" ");
-    if (!name) return api.sendMessage("❌ Provide a group name.", threadID);
-
-    const lock = groupLocks.get(threadID) || {};
-    lock.groupName = name;
-    groupLocks.set(threadID, lock);
-
-    enqueue(threadID, () => api.setTitle(name, threadID));
-    return api.sendMessage(`🔒 Group name locked to:\n${name}`, threadID);
-  }
-
-  if (cmd === "nick") {
-    const nickname = args.join(" ");
-    if (!nickname) return api.sendMessage("❌ Provide a nickname.", threadID);
-
-    const lock = groupLocks.get(threadID) || {};
-    lock.nickname = nickname;
-    groupLocks.set(threadID, lock);
-
-    const info = await api.getThreadInfo(threadID);
-    for (const uid of info.participantIDs) {
-      enqueue(threadID, () => api.changeNickname(nickname, threadID, uid));
-    }
-
-    return api.sendMessage(`🔒 Nickname locked to:\n${nickname}`, threadID);
-  }
-
-  if (cmd === "off") {
-    groupLocks.delete(threadID);
-    return api.sendMessage("🔓 Group lock disabled.", threadID);
-  }
-
-  return api.sendMessage(
-`Usage:
-grouplock name <group name>
-grouplock nick <nickname>
-grouplock off`,
-    threadID
-  );
 };
