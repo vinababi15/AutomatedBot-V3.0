@@ -2,8 +2,8 @@ module.exports.config = {
     name: "fight",
     version: "1.0.0",
     hasPermssion: 1,
-    credits: "ChatGPT",
-    description: "Playful fight roleplay with a target (admin only)",
+    credits: "Vern",
+    description: "nakikipag away na bot balagbagan",
     commandCategory: "fun",
     usages: "[name or mention]",
     cooldowns: 3
@@ -11,10 +11,11 @@ module.exports.config = {
 
 // ✅ ADMIN UIDS
 const ADMIN_UIDS = [
-    "61577300994025"
+    "61577300994025",
+    "61578929660413"
 ];
 
-// 🎭 PLAYFUL FIGHT LINES
+// @way
 const fightLines = (name) => [
     `dog kita aaa, ${name}.`,
     `de tuwad ka tagain kolang pwet mo malambot, ${name}.`,
@@ -395,7 +396,7 @@ const fightLines = (name) => [
 
 module.exports.run = async function ({ api, event, args }) {
     try {
-        // 🔐 Admin check
+        // admin only
         if (!ADMIN_UIDS.includes(event.senderID)) {
             return api.sendMessage(
                 "❌ Admin only command.",
@@ -404,7 +405,7 @@ module.exports.run = async function ({ api, event, args }) {
             );
         }
 
-        // 🧑 Target detection (mention OR name)
+        // target
         let targetName = args.join(" ");
 
         if (Object.keys(event.mentions).length > 0) {
@@ -420,7 +421,7 @@ module.exports.run = async function ({ api, event, args }) {
             );
         }
 
-        // 💬 Send fight messages sentence by sentence
+        // away
         const messages = fightLines(targetName);
 
         for (const msg of messages) {
