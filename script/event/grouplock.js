@@ -1,14 +1,13 @@
 module.exports.config = {
     name: "grouplock",
-    version: "1.3.0",
-    description: "Auto react, auto nick on join (once), bot nick, anti GC rename, anti like spam"
+    version: "1.4.0",
+    description: "Auto react, auto nick, nick revert, bot nick, anti GC rename, anti like spam"
 };
 
 /* ================= SETTINGS ================= */
 
 const MEMBER_NICK = "owned by skye";
 const BOT_NICK = "skye was here";
-
 const REACTIONS = ["❤️", "👍", "😆", "🔥", "😍", "😎"];
 
 const LIKE_WARN = 3;
@@ -17,9 +16,9 @@ const LIKE_TIME = 6000;
 
 /* ================= MEMORY ================= */
 
-const groupNames = new Map();          // threadID => last name
-const nickSet = new Set();             // threadID:userID
-const likeCount = new Map();           // spam tracker
+const groupNames = new Map();           // threadID => locked name
+const expectedNick = new Map();         // threadID:userID => nickname
+const likeCount = new Map();
 const warned = new Set();
 
 /* ================= HELPERS ================= */
@@ -33,22 +32,21 @@ module.exports.handleEvent = async function ({ api, event }) {
     const senderID = event.senderID;
     const botID = api.getCurrentUserID();
 
-    /* ========= AUTO REACT (RANDOM, ALL MEMBERS) ========= */
+    /* ========= AUTO REACT (ALL MEMBERS, RANDOM) ========= */
     if (
-        event.type === "message" ||
-        event.type === "message_reply"
+        (event.type === "message" || event.type === "message_reply") &&
+        senderID !== botID &&
+        event.messageID
     ) {
-        if (event.messageID && senderID !== botID) {
-            api.setMessageReaction(
-                pick(REACTIONS),
-                event.messageID,
-                () => {},
-                true // self listen
-            );
-        }
+        api.setMessageReaction(
+            pick(REACTIONS),
+            event.messageID,
+            () => {},
+            true
+        );
     }
 
-    /* ========= STORE ORIGINAL GROUP NAME ========= */
+    /* ========= SAVE ORIGINAL GROUP NAME ========= */
     if (!groupNames.has(threadID) && event.type === "message") {
         const info = await api.getThreadInfo(threadID);
         groupNames.set(threadID, info.threadName);
@@ -58,15 +56,15 @@ module.exports.handleEvent = async function ({ api, event }) {
     if (event.logMessageType === "log:thread-name") {
         const changerID = event.author;
         const info = await api.getThreadInfo(threadID);
-        const oldName = groupNames.get(threadID);
+        const lockedName = groupNames.get(threadID);
 
-        if (!oldName) {
+        if (!lockedName) {
             groupNames.set(threadID, info.threadName);
             return;
         }
 
-        if (info.threadName !== oldName) {
-            api.setTitle(oldName, threadID);
+        if (info.threadName !== lockedName) {
+            api.setTitle(lockedName, threadID);
 
             const botAdmin = info.adminIDs.some(a => a.id === botID);
             const userAdmin = info.adminIDs.some(a => a.id === changerID);
@@ -77,25 +75,40 @@ module.exports.handleEvent = async function ({ api, event }) {
         }
     }
 
-    /* ========= AUTO NICKNAME (ONCE PER JOIN) ========= */
+    /* ========= AUTO NICK ON JOIN ========= */
     if (event.logMessageType === "log:subscribe") {
         const users = event.logMessageData.addedParticipants || [];
 
         for (const u of users) {
             const uid = u.userFbId;
             const key = `${threadID}:${uid}`;
+            const nick = uid === botID ? BOT_NICK : MEMBER_NICK;
 
-            if (nickSet.has(key)) continue;
-            nickSet.add(key);
+            expectedNick.set(key, nick);
 
             setTimeout(() => {
-                if (uid === botID) {
-                    api.changeNickname(BOT_NICK, threadID, botID);
-                } else {
-                    api.changeNickname(MEMBER_NICK, threadID, uid);
-                }
+                api.changeNickname(nick, threadID, uid);
             }, 2000);
         }
+    }
+
+    /* ========= NICKNAME REVERT (ANTI CLEAR / CHANGE) ========= */
+    if (event.logMessageType === "log:user-nickname") {
+        const targetID = event.logMessageData.participant_id;
+        if (!targetID) return;
+
+        const key = `${threadID}:${targetID}`;
+        const wantedNick =
+            targetID === botID ? BOT_NICK : expectedNick.get(key);
+
+        if (!wantedNick) return;
+
+        // Ignore bot's own successful changes
+        if (event.author === botID) return;
+
+        setTimeout(() => {
+            api.changeNickname(wantedNick, threadID, targetID);
+        }, 1500);
     }
 
     /* ========= LIKE MESSAGE ANTI SPAM ========= */
