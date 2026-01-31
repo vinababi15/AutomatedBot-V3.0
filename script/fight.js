@@ -10,8 +10,9 @@ module.exports.config = {
 };
 
 const ADMIN_UIDS = [
-  "61577300994025"
-  // you can add more admin UIDs here
+  "61577300994025",
+  "61578929660413"
+  // admin UIDs here
 ];
 
 const fightLines = (name) => [
