@@ -65,7 +65,7 @@ setInterval(() => {
 }, 30000);
 
 module.exports.config = {
-  name: "simv3",
+  name: "skye",
   version: "3.0.0",
   permission: 0,
   credits: "Nax",
