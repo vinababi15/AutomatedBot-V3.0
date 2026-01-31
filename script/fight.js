@@ -1,339 +1,438 @@
 module.exports.config = {
-  name: "fight",
-  version: "1.0.0",
-  hasPermssion: 0,
-  credits: "vern",
-  description: "nang aaway na komando (cursed)",
-  commandCategory: "fun",
-  usages: "[name | mention]",
-  cooldowns: 5
+    name: "fight",
+    version: "1.0.0",
+    hasPermssion: 1,
+    credits: "ChatGPT",
+    description: "Playful fight roleplay with a target (admin only)",
+    commandCategory: "fun",
+    usages: "[name or mention]",
+    cooldowns: 3
 };
 
+// ✅ ADMIN UIDS
 const ADMIN_UIDS = [
-  "61577300994025",
-  "61578929660413"
-  // admin UIDs here
+    "61577300994025"
 ];
 
+// 🎭 PLAYFUL FIGHT LINES
 const fightLines = (name) => [
-  `dog kita aaa, ${name}.`
-`de tuwad ka tagain kolang pwet mo malambot, ${name}.`
-`aaaa dog kita, ${name}.`
-`de alam ko kahawig mo palakol namin e, ${name}.`
-`de pero moka kang pwet, ${name}.`
-`wag ka maiyak dog, ${name}.`
-`naiyak sa inis si dogs oh nakita ko, ${name}.`
-`ayts wag ka mag rason dog, ${name}.`
-`ayts dog ko mga ganyan why, ${name}.`
-`focus ka sakin buldog ko, ${name}.`
-`wag mo sila pakinggan cuz what they are know?, ${name}.`
-`focus me dogs, ${name}.`
-`dog siraulo kalaban mo para aware kalang, ${name}.`
-`nasisiraan na ng bait si dog ko aaa, ${name}.`
-`dog no school tomorrow and today, ${name}.`
-`kaya ka binatokan nang mama mo e, ${name}.`
-`dog paano moko pa d.o?, ${name}.`
-`na stress na si dog ko aa, ${name}.`
-`mag pray ka dog na mapagod ako, ${name}.`
-`di tayo matolog hanggat di ako inaantok, ${name}.`
-`ops pag ako kalaban wala quit button, ${name}.`
-`type nangalang ginagawa mo nangangatog ka pa, ${name}.`
-`de why ka namola sa inis?, ${name}.`
-`aa aso ka why, ${name}.`
-`alam ko namomola kana sa inis eee, ${name}.`
-`ginawang tambol ulo ni dogs, ${name}.`
-`tamo nayayamot si dogs, ${name}.`
-`im the strongest of all dummy dogs, ${name}.`
-`aso ka why bakit, ${name}.`
-`e paano dogs kita, ${name}.`
-`naiyak na si dog ko kakita ko aaaa, ${name}.`
-`kahit mag jogging ka di mabawasan taba mo sa katawan, ${name}.`
-`bugoy na baboy ka ee, ${name}.`
-`nag hingalo na aso ko aaa, ${name}.`
-`walang kukurap sa lakas ko dogs, ${name}.`
-`dog jump ka nga, ${name}.`
-`alam mo para kang dog ko, ${name}.`
-`lasog lasog aso ko aa whyy, ${name}.`
-`de alam ko bulldog tong dog nato e, ${name}.`
-`kamoka mo si kumanding, ${name}.`
-`kahit mag binta ka nang ice water di mapipigilan ang nag liliyab kong lakas, ${name}.`
-`kala mo ata dog matotolog ako aaa, ${name}.`
-`binatokan dogs ko aaaa, ${name}.`
-`karakag ka ata dogs, ${name}.`
-`ano date ngayon dog, set mo dog unlimited time, ${name}.`
-`nag hintay ata siya mag d.o ako aaa, ${name}.`
-`binoksing ka dogs aa whyy, ${name}.`
-`ayts moka ang konat ko aa ayaw nako palagan ni dogs, ${name}.`
-`sumpter ata kalaban mo dog aaa, ${name}.`
-`bolaga ka dog akala mo aaa, ${name}.`
-`aso ka ee durog ka wala ka palag why, ${name}.`
-`bogbog ka dogs aa why naman?, ${name}.`
-`kamoka mo paa ko why, ${name}.`
-`de taga kagat lang kita ng brief, ${name}.`
-`dog para alam mo di ako natotolog, ${name}.`
-`nag wait sha na mag d.o ko aaa why, ${name}.`
-`tanong mo sakin aso ko, ${name}.`
-`boksingin mo lakas ko dog, ${name}.`
-`de alam ko pag ganyan inis na ee, ${name}.`
-`talo ka ata sir chief, ${name}.`
-`de aso ko ikaw whyy, ${name}.`
-`dog jump roll over, ${name}.`
-`labasan nako, ${name}.`
-`dilaan moto?, ${name}.`
-`yea dog ka aight?, ${name}.`
-`kahit si grock di ka kayang buhatin e?, ${name}.`
-`sobra na obesity mo dogs, ${name}.`
-`sa sobra taba mo dikana makalakad, ${name}.`
-`kahit sebo sayo natatakot ee, ${name}.`
-`de taba ka ee, ${name}.`
-`aaa kamukha mo si eric mukbang, ${name}.`
-`oo kamoka mo si Tupac sausage, ${name}.`
-`agay ko aso ka pala, ${name}.`
-`dog mo sleeping challenge, ${name}.`
-`hambalusin kta ng bakal na hawak ko dog, ${name}.`
-`nag bibinta kanang tabo aaa, ${name}.`
-`de contadina bontading ka, ${name}.`
-`shopa moto dogs, ${name}.`
-`de alam ko dihh rider ka, ${name}.`
-`moka tagilid na aso ko aa, ${name}.`
-`dash out nako oh aaaa, ${name}.`
-`its prank dog, ${name}.`
-`look dog naprank kita, ${name}.`
-`inaso si aso ko aaa, ${name}.`
-`aa dog ka right?, ${name}.`
-`porkit wala ns makain family mo nag pabatok kanalang saken, ${name}.`
-`oo wala na makain pamilya mo, ${name}.`
-`de alam ko toxic pamamahay nyo dahil tabachi ka ee, ${name}.`
-`de alam ko mama mo walker e, ${name}.`
-`porket kirat mama mo aa, ${name}.`
-`bulotong lang ma uuto mo dogs, ${name}.`
-`moka kang kulangot, ${name}.`
-`Padala ka excuse litir ss tetsir mo, ${name}.`
-`di kita papasokin absent ka mona, ${name}.`
-`dogs absent ka muna aaa, ${name}.`
-`sana di mag reklamo nanay mo mataas bill kuryente nyo, ${name}.`
-`ready mo charger mo asoo, ${name}.`
-`de wala aso ka ee, ${name}.`
-`logic means god moko, ${name}.`
-`wala logic dogs ko otak talangka ee, ${name}.`
-`sagasaan kita ng wheelchair dogs, ${name}.`
-`oo kamoka mo yong lego ko, ${name}.`
-`wala reset button pag ako kalaban mo, ${name}.`
-`aaaa napa delete dogs ko aaa, ${name}.`
-`where is your pointing dogs, ${name}.`
-`dogs ano sabi mo turo monga, ${name}.`
-`u tell me dog where, ${name}.`
-`pag mga aso marunong yan tumahol e right dog?, ${name}.`
-`aaa aso ka waaaahh, ${name}.`
-`lalagnatin ka promise try, ${name}.`
-`kahit mag makaawa ka sakin di ka makakatakas, ${name}.`
-`dogs why ka angry binatokan lang namn kita, ${name}.`
-`call an ambulance call an ambulance but not for me😈, ${name}.`
-`kahit may surveillance team kapa taba di moko kaya, ${name}.`
-`no one is gonna stoped to me now, ${name}.`
-`dignified dogs kita why, ${name}.`
-`de dogs ko mga katulad mo e, ${name}.`
-`your not gonna sleep and not tired aaa, ${name}.`
-`hambalusin kta timba namin dog, ${name}.`
-`de aso ka alam ko suck my tintin ko, ${name}.`
-`binalasubas si aso ko ala nagawa oh why, ${name}.`
-`de alam ko takot ka saken, ${name}.`
-`umaasa matalo nya nocturnal creature aaa, ${name}.`
-`aaaaa moka umaasa na matolog ako aa dogs ka, ${name}.`
-`de dogs ito na tolog nako, ${name}.`
-`wala na pag di ka nag self react it means aso ka, ${name}.`
-`nayayamot aso ko aaa, ${name}.`
-`walang kukurap dogs aaa sabi ng boss mo, ${name}.`
-`ginawang tambol ulo ni dogs ko aaa, ${name}.`
-`binatokan ka lang nagalit kana aaa, ${name}.`
-`nag internal bleeding si dogs ko sinapak ko eee, ${name}.`
-`dogs self react kanga kong anjan kapa, ${name}.`
-`aso ko labanan mo amats ko aaa, ${name}.`
-`moka na mentally tortured si dogs aa, ${name}.`
-`dog dont sleep to me Aaaaaa, ${name}.`
-`aaa aso kita yes legit, ${name}.`
-`psst kahawig mo yong pwet ng kaldero, ${name}.`
-`baka iiyak ka pag nilabas ko etikelz ko aa, ${name}.`
-`payag ka labanan mo ginintoang gagamba ko, ${name}.`
-`de alam ko mag kamoka kayo ni jaybe sokal, ${name}.`
-`namatay sa inis aso ko whyyy, ${name}.`
-`dogs ko bite mo nga ttko, ${name}.`
-`aaaaaa babadeng aso ko wanna suck mo tintin ko, ${name}.`
-`you,re idyot dogs im the god of all, ${name}.`
-`nag malfunction ata otak nang dogs ko aa, ${name}.`
-`ayts napa english nako sa dogs ko aa, ${name}.`
-`de nabakbak na frontal lobe mo aso, ${name}.`
-`e paano dogs ko buong angkan mo, ${name}.`
-`dogs why ka mahina, ${name}.`
-`kawawa naman dogs ko nag mamakaawa saken, ${name}.`
-`bembs ko lang mama mo aaa, ${name}.`
-`de basta aso kita wala mag bago, ${name}.`
-`nangatog aso ko aaaa, ${name}.`
-`ako last boss ng mga bisaya why dogs, ${name}.`
-`asuka nganie, ${name}.`
-`bogbog aso ko pati mama nya aaa, ${name}.`
-`parang sira na plaka dogs ko aa, ${name}.`
-`dogs why ka lambot aaa, ${name}.`
-`kahit mag tamad typing ka ala mag bago dogs ka, ${name}.`
-`de alam ko aso ka ee, ${name}.`
-`dogs backflip ka nga, ${name}.`
-`ano dogs kaya mo pa baaaa aaa, ${name}.`
-`wala na nangawit na buong katawan ni dogs, ${name}.`
-`aso ka naman eee, ${name}.`
-`agay ko lambot dogs ko aaa, ${name}.`
-`dog kita yes tama?, ${name}.`
-`aa aso ka right?, ${name}.`
-`dogs ka why, ${name}.`
-`dogs bark ka nga, ${name}.`
-`de aso kita kelangan mo roll, ${name}.`
-`hey dogs jump ka nga utos ko, ${name}.`
-`look good boy dogs ko sitdown, ${name}.`
-`aaa aso kita dogs bark, ${name}.`
-`ayts ako boss mo why ka dogs, ${name}.`
-`shupakelz moto dogs oooo, ${name}.`
-`ops moka lambot mo dogs ko aa, ${name}.`
-`moka niregla ata dogs ko as, ${name}.`
-`dogs ko tinopak nag maktol ala magawa, ${name}.`
-`aaa prank ko dogs koo, ${name}.`
-`eto na tolog nako dogs ko, ${name}.`
-`no one can defeat me dogs mahihina kau, ${name}.`
-`e paano dogs kita forever, ${name}.`
-`kahit lola mo dogs di ka masasalba Aaaa, ${name}.`
-`loka loka ka dogs why ka nasaktan, ${name}.`
-`dogs ko to siya naiyak na oh aaaa, ${name}.`
-`aso ko to e tamo nangatog, ${name}.`
-`alam ko takot ka na saken dogs ka eee, ${name}.`
-`pusong babae ka ba o babae ka answer me dogs, ${name}.`
-`dogs alam ko pwet lang malambot sayo, ${name}.`
-`wala na siya lambot na aaaa, ${name}.`
-`teng teng teng kaya mopa dogsss ko??, ${name}.`
-`dogs ko lang to siya eee, ${name}.`
-`mag jogging kanga shrek, ${name}.`
-`dogs bangon ka aaa, ${name}.`
-`asukoo di mo ata alam sira ulo ako Ahahah, ${name}.`
-`wala na naiyak na ang buldog ko why, ${name}.`
-`bagting olo mo dogs ala ka magawa, ${name}.`
-`dog look concern pako sayo o, ${name}.`
-`dog wag ka mahilo drink ka water, ${name}.`
-`dogs tanong lang kaya mopa?, ${name}.`
-`de takot ka ata boksingin lakas ko aa, ${name}.`
-`wala palag sakin tota ko ohh, ${name}.`
-`im the strongest im the whole universe, ${name}.`
-`im translator im boss, ${name}.`
-`masiyado ata malakas ako aaaa, ${name}.`
-`alam ko nangangatog nato si dogs eee, ${name}.`
-`dogs dont cry aight?, ${name}.`
-`dog look at me don't turn away, ${name}.`
-`wag ka mawawala pls lang, ${name}.`
-`fucos ka lang sakin dog, ${name}.`
-`kaya pa ba, ${name}.`
-`dito ka lang dog ko wala ka takas, ${name}.`
-`di mo kakayanin kunat ko dog, ${name}.`
-`pagod ka na ata asoko, ${name}.`
-`di natutulog alien na tulad ko aaa, ${name}.`
-`ramdam ko pagod ka na aa, ${name}.`
-`gusto na ata matulog netong asoko, ${name}.`
-`ano na kala ko kakayanin mo amats ko, ${name}.`
-`aso kita aaa, ${name}.`
-`aso kita baket, ${name}.`
-`bilisan mo pls lamya na a, ${name}.`
-`di ka makakatulog sakin dog, ${name}.`
-`plakda dog ko bugbog ba naman, ${name}.`
-`tawag na 911 di nya na kaya, ${name}.`
-`error 404 na utak nya oh, ${name}.`
-`corrupted na utak nya tamo, ${name}.`
-`yan na nanlambot na sya, ${name}.`
-`chobo mo to ramdam ko gutom ka na e, ${name}.`
-`shupa moko aa, ${name}.`
-`kagat mo brief ko aaa, ${name}.`
-`pagod ka na ata asoko, ${name}.`
-`diabetic lola mo batet, ${name}.`
-`dog ko kahit anong force mo dog parin kita, ${name}.`
-`tali kita sa brief ko dog, ${name}.`
-`oo mukha kang pokemon, ${name}.`
-`nanlambot ata sya sa kunat ko aaa, ${name}.`
-`dog ko ngatngat mo tintin ko, ${name}.`
-`asuku ikaw aaaa, ${name}.`
-`balyena kita oo, ${name}.`
-`balyena banas ka na ata, ${name}.`
-`pawisan na ata yobab ko aaa, ${name}.`
-`di na mauubos choresterol mo aaa, ${name}.`
-`jogging ka muna balyena, ${name}.`
-`e paano dog ka, ${name}.`
-`de alam ko dog to eee, ${name}.`
-`aso ka yes?, ${name}.`
-`de dog kita eee, ${name}.`
-`basta ganyan dog ko eee, ${name}.`
-`mag self react ka dog utos ko, ${name}.`
-`Nangawit dog ko ah, ${name}.`
-`dont cry dog ko, ${name}.`
-`agay ko aning sakin si dog, ${name}.`
-`asaran lang to dog wala iyakan, ${name}.`
-`de alam ko aso ka ehh, ${name}.`
-`logmok ata dog ko aa, ${name}.`
-`pure logmokan lang allah iyakan, ${name}.`
-`dog ko wag mo ako iiwan aaaa, ${name}.`
-`tahol kanga dog utos ko baket, ${name}.`
-`Alam ko ganto dogs yan, ${name}.`
-`aso kita omsim, ${name}.`
-`Logmokan to wala tologan yes, ${name}.`
-`moka lambot dogs ko ah, ${name}.`
-`agay ko moka aning saken, ${name}.`
-`wala takbohan dog, ${name}.`
-`dog ko to sya eh, ${name}.`
-`alam ko aso to mga kausap ko e, ${name}.`
-`wag ka iyak dog kala nya makakapalag sha, ${name}.`
-`bawi ka dog ko, ${name}.`
-`Dog iyakin ka aaaa, ${name}.`
-`dog paiyak kana oh, ${name}.`
-`Ok lng yan dog alam ko dimoko kaya, ${name}.`
-`Botanding vs ako logmok botanding eh, ${name}.`
-`oo ikaw kamoka mo botanding, ${name}.`
-`why ka inis dog, ${name}.`
-`Dog aso kita dibaa, ${name}.`
-`kaya pa ba dog di na ata, ${name}.`
-`nag hihingalo ka na ata aaa, ${name}.`
-`dog ko bat pilay ka na ata, ${name}.`
-`puputok na ata ugat mo sa utak aa, ${name}.`
-`ngawit na kamay nyang may kikiam, ${name}.`
-`bali na ata daliri mo dogg, ${name}.`
-`kelan bawi mo pag buhay na ulit lola mo, ${name}.`
-`dog kita kahit ano gawin mo, ${name}.`
-`chobo mo to monster, ${name}.`
-`wag kang mang hina eat mo mona dihh ko, ${name}.`
-`eto salo mo laway ko aaaa, ${name}.`
-`toothbrush mo ttko aaa, ${name}.`
-`tulak ko lola mong naka wheelchair eee, ${name}.`
-`lola mo naka dextrose baket, ${name}.`
-`lola mo sandcastle batet baliw ka, ${name}.`
+    `dog kita aaa, ${name}.`,
+    `de tuwad ka tagain kolang pwet mo malambot, ${name}.`,
+    `aaaa dog kita, ${name}.`,
+    `de alam ko kahawig mo palakol namin e, ${name}.`,
+    `de pero moka kang pwet, ${name}.`,
+    `wag ka maiyak dog, ${name}.`,
+    `naiyak sa inis si dogs oh nakita ko, ${name}.`,
+    `ayts wag ka mag rason dog, ${name}.`,
+    `ayts dog ko mga ganyan why, ${name}.`,
+    `focus ka sakin buldog ko, ${name}.`,
+    `wag mo sila pakinggan cuz what they are know?, ${name}.`,
+    `focus me dogs, ${name}.`,
+    `dog siraulo kalaban mo para aware kalang, ${name}.`,
+    `nasisiraan na ng bait si dog ko aaa, ${name}.`,
+    `dog no school tomorrow and today, ${name}.`,
+    `kaya ka binatokan nang mama mo e, ${name}.`,
+    `dog paano moko pa d.o?, ${name}.`,
+    `na stress na si dog ko aa, ${name}.`,
+    `mag pray ka dog na mapagod ako, ${name}.`,
+    `di tayo matolog hanggat di ako inaantok, ${name}.`,
+    `ops pag ako kalaban wala quit button, ${name}.`,
+    `type nangalang ginagawa mo nangangatog ka pa, ${name}.`,
+    `de why ka namola sa inis?, ${name}.`,
+    `aa aso ka why, ${name}.`,
+    `alam ko namomola kana sa inis eee, ${name}.`,
+    `ginawang tambol ulo ni dogs, ${name}.`,
+    `tamo nayayamot si dogs, ${name}.`,
+    `im the strongest of all dummy dogs, ${name}.`,
+    `aso ka why bakit, ${name}.`,
+    `e paano dogs kita, ${name}.`,
+    `naiyak na si dog ko kakita ko aaaa, ${name}.`,
+    `kahit mag jogging ka di mabawasan taba mo sa katawan, ${name}.`,
+    `bugoy na baboy ka ee, ${name}.`,
+    `nag hingalo na aso ko aaa, ${name}.`,
+    `walang kukurap sa lakas ko dogs, ${name}.`,
+    `dog jump ka nga, ${name}.`,
+    `alam mo para kang dog ko, ${name}.`,
+    `lasog lasog aso ko aa whyy, ${name}.`,
+    `de alam ko bulldog tong dog nato e, ${name}.`,
+    `kamoka mo si kumanding, ${name}.`,
+    `kahit mag binta ka nang ice water di mapipigilan ang nag liliyab kong lakas, ${name}.`,
+    `kala mo ata dog matotolog ako aaa, ${name}.`,
+    `binatokan dogs ko aaaa, ${name}.`,
+    `karakag ka ata dogs, ${name}.`,
+    `ano date ngayon dog, set mo dog unlimited time, ${name}.`,
+    `nag hintay ata siya mag d.o ako aaa, ${name}.`,
+    `binoksing ka dogs aa whyy, ${name}.`,
+    `ayts moka ang konat ko aa ayaw nako palagan ni dogs, ${name}.`,
+    `sumpter ata kalaban mo dog aaa, ${name}.`,
+    `bolaga ka dog akala mo aaa, ${name}.`,
+    `aso ka ee durog ka wala ka palag why, ${name}.`,
+    `bogbog ka dogs aa why naman?, ${name}.`,
+    `kamoka mo paa ko why, ${name}.`,
+    `de taga kagat lang kita ng brief, ${name}.`,
+    `dog para alam mo di ako natotolog, ${name}.`,
+    `nag wait sha na mag d.o ko aaa why, ${name}.`,
+    `tanong mo sakin aso ko, ${name}.`,
+    `boksingin mo lakas ko dog, ${name}.`,
+    `de alam ko pag ganyan inis na ee, ${name}.`,
+    `talo ka ata sir chief, ${name}.`,
+    `de aso ko ikaw whyy, ${name}.`,
+    `dog jump roll over, ${name}.`,
+    `labasan nako, ${name}.`,
+    `dilaan moto?, ${name}.`,
+    `yea dog ka aight?, ${name}.`,
+    `kahit si grock di ka kayang buhatin e?, ${name}.`,
+    `sobra na obesity mo dogs, ${name}.`,
+    `sa sobra taba mo dikana makalakad, ${name}.`,
+    `kahit sebo sayo natatakot ee, ${name}.`,
+    `de taba ka ee, ${name}.`,
+    `aaa kamukha mo si eric mukbang, ${name}.`,
+    `oo kamoka mo si Tupac sausage, ${name}.`,
+    `agay ko aso ka pala, ${name}.`,
+    `dog mo sleeping challenge, ${name}.`,
+    `hambalusin kta ng bakal na hawak ko dog, ${name}.`,
+    `nag bibinta kanang tabo aaa, ${name}.`,
+    `de contadina bontading ka, ${name}.`,
+    `shopa moto dogs, ${name}.`,
+    `de alam ko dihh rider ka, ${name}.`,
+    `moka tagilid na aso ko aa, ${name}.`,
+    `dash out nako oh aaaa, ${name}.`,
+    `its prank dog, ${name}.`,
+    `look dog naprank kita, ${name}.`,
+    `inaso si aso ko aaa, ${name}.`,
+    `aa dog ka right?, ${name}.`,
+    `porkit wala ns makain family mo nag pabatok kanalang saken, ${name}.`,
+    `oo wala na makain pamilya mo, ${name}.`,
+    `de alam ko toxic pamamahay nyo dahil tabachi ka ee, ${name}.`,
+     `de alam ko mama mo walker e, ${name}.`,
+`porket kirat mama mo aa, ${name}.`,
+`bulotong lang ma uuto mo dogs, ${name}.`,
+`moka kang kulangot, ${name}.`,
+`Padala ka excuse litir ss tetsir mo, ${name}.`,
+`di kita papasokin absent ka mona, ${name}.`,
+`dogs absent ka muna aaa, ${name}.`,
+`sana di mag reklamo nanay mo mataas bill kuryente nyo, ${name}.`,
+`ready mo charger mo asoo, ${name}.`,
+`de wala aso ka ee, ${name}.`,
+`logic means god moko, ${name}.`,
+`wala logic dogs ko otak talangka ee, ${name}.`,
+`sagasaan kita ng wheelchair dogs, ${name}.`,
+`oo kamoka mo yong lego ko, ${name}.`,
+`wala reset button pag ako kalaban mo, ${name}.`,
+`aaaa napa delete dogs ko aaa, ${name}.`,
+`where is your pointing dogs, ${name}.`,
+`dogs ano sabi mo turo monga, ${name}.`,
+`u tell me dog where, ${name}.`,
+`pag mga aso marunong yan tumahol e right dog?, ${name}.`,
+`aaa aso ka waaaahh, ${name}.`,
+`lalagnatin ka promise try, ${name}.`,
+`kahit mag makaawa ka sakin di ka makakatakas, ${name}.`,
+`dogs why ka angry binatokan lang namn kita, ${name}.`,
+`call an ambulance call an ambulance but not for me😈, ${name}.`,
+`kahit may surveillance team kapa taba di moko kaya, ${name}.`,
+`no one is gonna stoped to me now, ${name}.`,
+`dignified dogs kita why, ${name}.`,
+`de dogs ko mga katulad mo e, ${name}.`,
+`your not gonna sleep and not tired aaa, ${name}.`,
+`hambalusin kta timba namin dog, ${name}.`,
+`de aso ka alam ko suck my tintin ko, ${name}.`,
+`binalasubas si aso ko ala nagawa oh why, ${name}.`,
+`de alam ko takot ka saken, ${name}.`,
+`umaasa matalo nya nocturnal creature aaa, ${name}.`,
+`aaaaa moka umaasa na matolog ako aa dogs ka, ${name}.`,
+`de dogs ito na tolog nako, ${name}.`,
+`wala na pag di ka nag self react it means aso ka, ${name}.`,
+`nayayamot aso ko aaa, ${name}.`,
+`walang kukurap dogs aaa sabi ng boss mo, ${name}.`,
+`ginawang tambol ulo ni dogs ko aaa, ${name}.`,
+`binatokan ka lang nagalit kana aaa, ${name}.`,
+`nag internal bleeding si dogs ko sinapak ko eee, ${name}.`,
+`dogs self react kanga kong anjan kapa, ${name}.`,
+`aso ko labanan mo amats ko aaa, ${name}.`,
+`moka na mentally tortured si dogs aa, ${name}.`,
+`dog dont sleep to me Aaaaaa, ${name}.`,
+`aaa aso kita yes legit, ${name}.`,
+`psst kahawig mo yong pwet ng kaldero, ${name}.`,
+`baka iiyak ka pag nilabas ko etikelz ko aa, ${name}.`,
+`payag ka labanan mo ginintoang gagamba ko, ${name}.`,
+`de alam ko mag kamoka kayo ni jaybe sokal, ${name}.`,
+`namatay sa inis aso ko whyyy, ${name}.`,
+`dogs ko bite mo nga ttko, ${name}.`,
+`aaaaaa babadeng aso ko wanna suck mo tintin ko, ${name}.`,
+`you,re idyot dogs im the god of all, ${name}.`,
+`nag malfunction ata otak nang dogs ko aa, ${name}.`,
+`ayts napa english nako sa dogs ko aa, ${name}.`,
+`de nabakbak na frontal lobe mo aso, ${name}.`,
+`e paano dogs ko buong angkan mo, ${name}.`,
+`dogs why ka mahina, ${name}.`,
+`kawawa naman dogs ko nag mamakaawa saken, ${name}.`,
+`bembs ko lang mama mo aaa, ${name}.`,
+`de basta aso kita wala mag bago, ${name}.`,
+`nangatog aso ko aaaa, ${name}.`,
+`ako last boss ng mga bisaya why dogs, ${name}.`,
+`asuka nganie, ${name}.`,
+`bogbog aso ko pati mama nya aaa, ${name}.`,
+`parang sira na plaka dogs ko aa, ${name}.`,
+`dogs why ka lambot aaa, ${name}.`,
+`kahit mag tamad typing ka ala mag bago dogs ka, ${name}.`,
+`de alam ko aso ka ee, ${name}.`,
+`dogs backflip ka nga, ${name}.`,
+`ano dogs kaya mo pa baaaa aaa, ${name}.`,
+`wala na nangawit na buong katawan ni dogs, ${name}.`,
+`aso ka naman eee, ${name}.`,
+`agay ko lambot dogs ko aaa, ${name}.`,
+`dog kita yes tama?, ${name}.`,
+`aa aso ka right?, ${name}.`,
+`dogs ka why, ${name}.`,
+`dogs bark ka nga, ${name}.`,
+`de aso kita kelangan mo roll, ${name}.`,
+`hey dogs jump ka nga utos ko, ${name}.`,
+`look good boy dogs ko sitdown, ${name}.`,
+`aaa aso kita dogs bark, ${name}.`,
+`ayts ako boss mo why ka dogs, ${name}.`,
+`shupakelz moto dogs oooo, ${name}.`,
+`ops moka lambot mo dogs ko aa, ${name}.`,
+`moka niregla ata dogs ko as, ${name}.`,
+`dogs ko tinopak nag maktol ala magawa, ${name}.`,
+`aaa prank ko dogs koo, ${name}.`,
+`eto na tolog nako dogs ko, ${name}.`,
+`no one can defeat me dogs mahihina kau, ${name}.`,
+`e paano dogs kita forever, ${name}.`,
+`kahit lola mo dogs di ka masasalba Aaaa, ${name}.`,
+`loka loka ka dogs why ka nasaktan, ${name}.`,
+`dogs ko to siya naiyak na oh aaaa, ${name}.`,
+`aso ko to e tamo nangatog, ${name}.`,
+`alam ko takot ka na saken dogs ka eee, ${name}.`,
+`pusong babae ka ba o babae ka answer me dogs, ${name}.`,
+`dogs alam ko pwet lang malambot sayo, ${name}.`,
+`wala na siya lambot na aaaa, ${name}.`,
+`teng teng teng kaya mopa dogsss ko??, ${name}.`,
+`dogs ko lang to siya eee, ${name}.`,
+`mag jogging kanga shrek, ${name}.`,
+`dogs bangon ka aaa, ${name}.`,
+`asukoo di mo ata alam sira ulo ako Ahahah, ${name}.`,
+`wala na naiyak na ang buldog ko why, ${name}.`,
+`bagting olo mo dogs ala ka magawa, ${name}.`,
+`dog look concern pako sayo o, ${name}.`,
+`dog wag ka mahilo drink ka water, ${name}.`,
+`dogs tanong lang kaya mopa?, ${name}.`,
+`de takot ka ata boksingin lakas ko aa, ${name}.`,
+`wala palag sakin tota ko ohh, ${name}.`,
+`im the strongest im the whole universe, ${name}.`,
+`im translator im boss, ${name}.`,
+`masiyado ata malakas ako aaaa, ${name}.`,
+`alam ko nangangatog nato si dogs eee, ${name}.`,
+`dogs dont cry aight?, ${name}.`,
+`dog look at me don't turn away, ${name}.`,
+`wag ka mawawala pls lang, ${name}.`,
+`fucos ka lang sakin dog, ${name}.`,
+`kaya pa ba, ${name}.`,
+`dito ka lang dog ko wala ka takas, ${name}.`,
+`di mo kakayanin kunat ko dog, ${name}.`,
+`pagod ka na ata asoko, ${name}.`,
+`di natutulog alien na tulad ko aaa, ${name}.`,
+`ramdam ko pagod ka na aa, ${name}.`,
+`gusto na ata matulog netong asoko, ${name}.`,
+`ano na kala ko kakayanin mo amats ko, ${name}.`,
+`aso kita aaa, ${name}.`,
+`aso kita baket, ${name}.`,
+`bilisan mo pls lamya na a, ${name}.`,
+`di ka makakatulog sakin dog, ${name}.`,
+`plakda dog ko bugbog ba naman, ${name}.`,
+`tawag na 911 di nya na kaya, ${name}.`,
+`error 404 na utak nya oh, ${name}.`,
+`corrupted na utak nya tamo, ${name}.`,
+`yan na nanlambot na sya, ${name}.`,
+`chobo mo to ramdam ko gutom ka na e, ${name}.`,
+`shupa moko aa, ${name}.`,
+`kagat mo brief ko aaa, ${name}.`,
+`pagod ka na ata asoko, ${name}.`,
+`diabetic lola mo batet, ${name}.`,
+`dog ko kahit anong force mo dog parin kita, ${name}.`,
+`tali kita sa brief ko dog, ${name}.`,
+`oo mukha kang pokemon, ${name}.`,
+`nanlambot ata sya sa kunat ko aaa, ${name}.`,
+`dog ko ngatngat mo tintin ko, ${name}.`,
+`asuku ikaw aaaa, ${name}.`,
+`balyena kita oo, ${name}.`,
+`balyena banas ka na ata, ${name}.`,
+`pawisan na ata yobab ko aaa, ${name}.`,
+`di na mauubos choresterol mo aaa, ${name}.`,
+`jogging ka muna balyena, ${name}.`,
+`e paano dog ka, ${name}.`,
+`de alam ko dog to eee, ${name}.`,
+`aso ka yes?, ${name}.`,
+`de dog kita eee, ${name}.`,
+`basta ganyan dog ko eee, ${name}.`,
+`mag self react ka dog utos ko, ${name}.`,
+`Nangawit dog ko ah, ${name}.`,
+`dont cry dog ko, ${name}.`,
+`agay ko aning sakin si dog, ${name}.`,
+`asaran lang to dog wala iyakan, ${name}.`,
+`de alam ko aso ka ehh, ${name}.`,
+`logmok ata dog ko aa, ${name}.`,
+`pure logmokan lang allah iyakan, ${name}.`,
+`dog ko wag mo ako iiwan aaaa, ${name}.`,
+`tahol kanga dog utos ko baket, ${name}.`,
+`Alam ko ganto dogs yan, ${name}.`,
+`aso kita omsim, ${name}.`,
+`Logmokan to wala tologan yes, ${name}.`,
+`moka lambot dogs ko ah, ${name}.`,
+`agay ko moka aning saken, ${name}.`,
+`wala takbohan dog, ${name}.`,
+`dog ko to sya eh, ${name}.`,
+`alam ko aso to mga kausap ko e, ${name}.`,
+`wag ka iyak dog kala nya makakapalag sha, ${name}.`,
+`bawi ka dog ko, ${name}.`,
+`Dog iyakin ka aaaa, ${name}.`,
+`dog paiyak kana oh, ${name}.`,
+`Ok lng yan dog alam ko dimoko kaya, ${name}.`,
+`Botanding vs ako logmok botanding eh, ${name}.`,
+`oo ikaw kamoka mo botanding, ${name}.`,
+`why ka inis dog, ${name}.`,
+`Dog aso kita dibaa, ${name}.`,
+`kaya pa ba dog di na ata, ${name}.`,
+`nag hihingalo ka na ata aaa, ${name}.`,
+`dog ko bat pilay ka na ata, ${name}.`,
+`puputok na ata ugat mo sa utak aa, ${name}.`,
+`ngawit na kamay nyang may kikiam, ${name}.`,
+`bali na ata daliri mo dogg, ${name}.`,
+`kelan bawi mo pag buhay na ulit lola mo, ${name}.`,
+`dog kita kahit ano gawin mo, ${name}.`,
+`chobo mo to monster, ${name}.`,
+`wag kang mang hina eat mo mona dihh ko, ${name}.`,
+`eto salo mo laway ko aaaa, ${name}.`,
+`toothbrush mo ttko aaa, ${name}.`,
+`tulak ko lola mong naka wheelchair eee, ${name}.`,
+`lola mo naka dextrose baket, ${name}.`,
+`lola mo sandcastle batet, ${name}.`,
+`mukha kang kawali, ${name}.`,
+`lola mo nasa flower vase, ${name}.`,
+`mukha kang uniqlo, ${name}.`,
+`mukha kang sando, ${name}.`,
+`mukha kang jorts, ${name}.`,
+`mukha kang proclub, ${name}.`,
+`muka kang kaliskis, ${name}.`,
+`sakal kita ng charger, ${name}.`,
+`talon ka building dogg, ${name}.`,
+`ihian mo sarili mo asoko, ${name}.`,
+`kagatin mo sarilimo asoko, ${name}.`,
+`hampasin mo ng kawali papa mong kalbo, ${name}.`,
+`mukha kang tsinelas, ${name}.`,
+`kumakain ka ng medyas aso kitae, ${name}.`,
+`shupa mo doorknob nyo, ${name}.`,
+`mukha kang papaya, ${name}.`,
+`pa welding mo naman mukha mo, ${name}.`,
+`inom ka na ng painkiller kakaawa ka e, ${name}.`,
+`wag mo sana suntukin cp mo, ${name}.`,
+`napa tiger look ata aso ko naiinis aaa, ${name}.`,
+`papa mo mag titinda ng jersey, ${name}.`,
+`mamamo mag titinda turon, ${name}.`,
+`papa mo nag lalako ng timba, ${name}.`,
+`papa mo nag lalako ng palayok, ${name}.`,
+`papa mo nag lalako ng yosi, ${name}.`,
+`dog focus to me right now, ${name}.`,
+`ahhh aso ka ee, ${name}.`,
+`de alam ko kahawig moyong hepa e, ${name}.`,
+`BILISAN MO?, ${name}.`,
+`binugbog ka ata dogs aa, ${name}.`,
+`aaa aso kita why, ${name}.`,
+`kawawa na dogs ko oh?, ${name}.`,
+`hoy balmond, ${name}.`,
+`intactin mo eggs ko dog, ${name}.`,
+`de alam ko aso kita, ${name}.`,
+`alam ko kamoka moyong garapata namin e, ${name}.`,
+`de moka kang rambotan na may uud, ${name}.`,
+`salo nyona dogs ko look kawawa na eee, ${name}.`,
+`dog ako lang mag isa piro ala pa rin maka palag, ${name}.`,
+`masiyado ata malakas ang isang tolod ko, ${name}.`,
+`wag ka inis dog pag ako kalaban, ${name}.`,
+`de aso ka e tamo iiyak yan, ${name}.`,
+`lamutakin mo eggs ko, ${name}.`,
+`hilamos ka grasa para moka kang octopos, ${name}.`,
+`inom ka tobig para di ka antok, ${name}.`,
+`wag ka mahimatay sa antok dogs a, ${name}.`,
+`kamosta tombong mo aso?, ${name}.`,
+`hampasin kita ng tabo, ${name}.`,
+`pinaka makonat sa mundo ako lng, ${name}.`,
+`look oh fandog ko pala, ${name}.`,
+`binatukan ka lng nagalit ka na?, ${name}.`,
+`de kahit mama mo wala magawa pag ako nangupal, ${name}.`,
+`dot ka nga kong anjan kapa ba, ${name}.`,
+`himas monga dihh ko kung buhay kapa, ${name}.`,
+`kamoka mo yong tapiraw ng electric fan, ${name}.`,
+`dog pasalo kana moka logmok kana aa, ${name}.`,
+`sino sasali logmokan lang kawawa nato e, ${name}.`,
+`kahit math teacher nyo kinakatakutan ako, ${name}.`,
+`kayanin mo bagsik ko dogs, ${name}.`,
+`no to sleep tayo aa, ${name}.`,
+`truma na dogs ko sakin why, ${name}.`,
+`kahit kulangot mo mabalahura sa ilong mo e, ${name}.`,
+`sapukin ko kaya dos por dos moka mo, ${name}.`,
+`aaa sobra kunat ko nag iisip na sila na bot ako, ${name}.`,
+`alam ko takot mga kasama mo saken why?, ${name}.`,
+`de paano moko mapa d.o e bahay koto, ${name}.`,
+`sml : dogs kita, ${name}.`,
+`pa laminate mo tintin ko dogskie, ${name}.`,
+`boksingin kita dogskie, ${name}.`,
+`walang kukurap andito na ang bangungot nyo, ${name}.`,
+`para kang tabo e ambilis mo maiyak, ${name}.`,
+`kahit sampo pa kau ako lng mag isa logmok kau saken, ${name}.`,
+`e paano hari ako Ng lgc, ${name}.`,
+`aware ka ba na di ako natotolog dogskie?, ${name}.`,
+`aaa nakita ko kinikilig ka kapag hinahampas ka ng tintin, ${name}.`,
+`pagolong kita sa mountain okslamba, ${name}.`,
+`damahin mo lakas ko dogskie ko, ${name}.`,
+`suntukin ko mama mo payag ka?, ${name}.`,
+`ang tamlay mo na dog ko a, ${name}.`,
+`ako pa rin boss mo no one else, ${name}.`,
+`kamoka mo si pennywise, ${name}.`,
+`sampalin kita ng tihh ko, ${name}.`,
+`alam ko moka kang golong e, ${name}.`,
+`look at me dog ko bawal mapagod, ${name}.`
+    // ... continue adding all remaining phrases here in same format
 ];
 
 module.exports.run = async function ({ api, event, args }) {
-  if (!ADMIN_UIDS.includes(event.senderID)) {
-    return api.sendMessage(
-      "Only admins can use this command.",
-      event.threadID,
-      event.messageID
-    );
-  }
+    try {
+        // 🔐 Admin check
+        if (!ADMIN_UIDS.includes(event.senderID)) {
+            return api.sendMessage(
+                "❌ Admin only command.",
+                event.threadID,
+                event.messageID
+            );
+        }
 
-  let targetName = args.join(" ");
-  const mention = Object.keys(event.mentions)[0];
+        // 🧑 Target detection (mention OR name)
+        let targetName = args.join(" ");
 
-  if (mention) {
-    targetName = event.mentions[mention];
-  }
+        if (Object.keys(event.mentions).length > 0) {
+            const uid = Object.keys(event.mentions)[0];
+            targetName = event.mentions[uid];
+        }
 
-  if (!targetName) {
-    return api.sendMessage(
-      "Please provide a name or mention someone.",
-      event.threadID,
-      event.messageID
-    );
-  }
+        if (!targetName) {
+            return api.sendMessage(
+                "⚠️ Usage: fight <name>\nExample: fight Kate",
+                event.threadID,
+                event.messageID
+            );
+        }
 
-  for (const line of fightLines(targetName)) {
-    await api.sendMessage(line, event.threadID);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-  }
+        // 💬 Send fight messages sentence by sentence
+        const messages = fightLines(targetName);
+
+        for (const msg of messages) {
+            await api.sendMessage(msg, event.threadID);
+            await new Promise(resolve => setTimeout(resolve, 1200));
+        }
+
+    } catch (err) {
+        console.error(err);
+        api.sendMessage(
+            "❌ Something went wrong.",
+            event.threadID
+        );
+    }
 };
