@@ -1,23 +1,21 @@
 module.exports.config = {
-    name: "fight",
-    version: "1.0.0",
-    hasPermssion: 1,
-    credits: "ChatGPT",
-    description: "Playful fight roleplay with a target (admin only)",
-    commandCategory: "fun",
-    usages: "[name or mention]",
-    cooldowns: 3
+  name: "fight",
+  version: "1.0.0",
+  hasPermssion: 0,
+  credits: "vern",
+  description: "nang aaway na komando (cursed)",
+  commandCategory: "fun",
+  usages: "[name | mention]",
+  cooldowns: 5
 };
 
-// ✅ ADMIN UIDS
 const ADMIN_UIDS = [
-    "61577300994025",
-    "61578929660413"
+  "61577300994025"
+  // you can add more admin UIDs here
 ];
 
-// war war war
 const fightLines = (name) => [
-    `dog kita aaa, ${name}.`
+  `dog kita aaa, ${name}.`
 `de tuwad ka tagain kolang pwet mo malambot, ${name}.`
 `aaaa dog kita, ${name}.`
 `de alam ko kahawig mo palakol namin e, ${name}.`
@@ -306,50 +304,35 @@ const fightLines = (name) => [
 `toothbrush mo ttko aaa, ${name}.`
 `tulak ko lola mong naka wheelchair eee, ${name}.`
 `lola mo naka dextrose baket, ${name}.`
-`lola mo sandcastle batet.`
-
+`lola mo sandcastle batet baliw ka, ${name}.`
 ];
 
 module.exports.run = async function ({ api, event, args }) {
-    try {
-        // 🔐 Admin check
-        if (!ADMIN_UIDS.includes(event.senderID)) {
-            return api.sendMessage(
-                "❌ Admin only command.",
-                event.threadID,
-                event.messageID
-            );
-        }
+  if (!ADMIN_UIDS.includes(event.senderID)) {
+    return api.sendMessage(
+      "Only admins can use this command.",
+      event.threadID,
+      event.messageID
+    );
+  }
 
-        // 🧑 Target detection (mention OR name)
-        let targetName = args.join(" ");
+  let targetName = args.join(" ");
+  const mention = Object.keys(event.mentions)[0];
 
-        if (Object.keys(event.mentions).length > 0) {
-            const uid = Object.keys(event.mentions)[0];
-            targetName = event.mentions[uid];
-        }
+  if (mention) {
+    targetName = event.mentions[mention];
+  }
 
-        if (!targetName) {
-            return api.sendMessage(
-                "⚠️ Usage: fight <name>\nExample: fight Kate",
-                event.threadID,
-                event.messageID
-            );
-        }
+  if (!targetName) {
+    return api.sendMessage(
+      "Please provide a name or mention someone.",
+      event.threadID,
+      event.messageID
+    );
+  }
 
-        // fought 
-        const messages = fightLines(targetName);
-
-        for (const msg of messages) {
-            await api.sendMessage(msg, event.threadID);
-            await new Promise(resolve => setTimeout(resolve, 1200));
-        }
-
-    } catch (err) {
-        console.error(err);
-        api.sendMessage(
-            "❌ Something went wrong.",
-            event.threadID
-        );
-    }
+  for (const line of fightLines(targetName)) {
+    await api.sendMessage(line, event.threadID);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
 };
