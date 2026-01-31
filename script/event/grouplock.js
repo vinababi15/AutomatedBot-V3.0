@@ -1,126 +1,144 @@
 const { setTimeout } = require("timers/promises");
 
-// In-memory storage
-const groupLocks = new Map();
-const actionQueues = new Map();
-const likeSpam = new Map();
-const warnedUsers = new Set();
-
-const BOT_NICKNAME = "skye was here";
-const AUTO_REACTION = "👍";
-const ACTION_DELAY = 1500;
-
-// Anti-spam settings
-const LIKE_LIMIT = 5;        // messages to trigger kick
-const WARNING_THRESHOLD = 3; // messages to warn
-const LIKE_INTERVAL = 4000;  // ms window
+/* ================= CONFIG ================= */
 
 module.exports.config = {
-  name: "grouplock",
-  version: "2.0.0",
-  description: "Locks group name, nicknames, auto-reacts, warns and kicks like-message spammers, auto-nicks bot"
+    name: "grouplock",
+    version: "1.0.0",
+    description: "Group name lock, nickname lock, auto nick, auto react, anti-like spam"
 };
 
-/* Queue helper */
-async function enqueue(threadID, action) {
-  if (!actionQueues.has(threadID)) actionQueues.set(threadID, Promise.resolve());
-  const queue = actionQueues.get(threadID);
+/* ================= SETTINGS ================= */
 
-  actionQueues.set(
-    threadID,
-    queue.then(() =>
-      new Promise(async (resolve) => {
-        try { await action(); } catch {}
-        setTimeout(resolve, ACTION_DELAY);
-      })
-    )
-  );
+const LOCKED_GROUP_NAME = "Skye owns this";
+const LOCKED_NICKNAME = "owned by skye";
+const BOT_NICKNAME = "skye was here";
+
+const AUTO_REACTION = "👍";
+
+/* Anti-spam */
+const LIKE_LIMIT = 5;          // kick
+const WARNING_LIMIT = 3;       // warn
+const LIKE_WINDOW = 5000;      // ms
+
+/* ================= MEMORY (NO DB) ================= */
+
+const likeTracker = new Map();
+const warned = new Set();
+const queue = new Map();
+
+/* ================= HELPERS ================= */
+
+async function enqueue(threadID, fn) {
+    if (!queue.has(threadID)) queue.set(threadID, Promise.resolve());
+
+    queue.set(
+        threadID,
+        queue.get(threadID).then(() =>
+            new Promise(async (res) => {
+                try { await fn(); } catch {}
+                setTimeout(res, 1200);
+            })
+        )
+    );
 }
 
+/* ================= EVENT HANDLER ================= */
+
 module.exports.handleEvent = async function ({ api, event }) {
-  const threadID = event.threadID;
-  const senderID = event.senderID;
+    const threadID = event.threadID;
+    const senderID = event.senderID;
 
-  // --- AUTO REACT TO ALL MESSAGES ---
-  if (event.type === "message" || event.type === "message_reply") {
-    enqueue(threadID, () =>
-      api.setMessageReaction(AUTO_REACTION, event.messageID, () => {}, true)
-    );
-  }
-
-  // --- LIKE MESSAGE ANTI-SPAM ---
-  if (event.type === "message" && event.body) {
-    const text = event.body.trim().toLowerCase();
-    if (text === "like" || text === "👍") {
-      const key = `${threadID}:${senderID}`;
-      const now = Date.now();
-
-      if (!likeSpam.has(key)) likeSpam.set(key, []);
-      const timestamps = likeSpam.get(key).filter(t => now - t < LIKE_INTERVAL);
-      timestamps.push(now);
-      likeSpam.set(key, timestamps);
-
-      // --- WARNING ---
-      if (timestamps.length >= WARNING_THRESHOLD && !warnedUsers.has(key)) {
-        warnedUsers.add(key);
+    /* ---------- AUTO REACT ---------- */
+    if (event.type === "message" || event.type === "message_reply") {
         enqueue(threadID, () =>
-          api.sendMessage(
-            `⚠ <@${senderID}>, stop spamming "like" messages or you will be removed!`,
-            threadID,
-            { mentions: [{ tag: `<@${senderID}>`, id: senderID }] }
-          )
+            api.setMessageReaction(AUTO_REACTION, event.messageID, () => {}, true)
         );
-      }
+    }
 
-      // --- KICK ---
-      if (timestamps.length >= LIKE_LIMIT) {
-        const botID = api.getCurrentUserID();
-        const info = await api.getThreadInfo(threadID);
-        const whitelist = info.adminIDs.map(a => a.id);
-        if (!whitelist.includes(senderID) && info.adminIDs.some(a => a.id === botID)) {
-          enqueue(threadID, () => api.removeUserFromGroup(senderID, threadID));
+    /* ---------- LIKE MESSAGE ANTI-SPAM ---------- */
+    if (event.type === "message" && event.body) {
+        const msg = event.body.trim().toLowerCase();
+        if (msg === "like" || msg === "👍") {
+            const key = `${threadID}:${senderID}`;
+            const now = Date.now();
+
+            if (!likeTracker.has(key)) likeTracker.set(key, []);
+            const logs = likeTracker.get(key).filter(t => now - t < LIKE_WINDOW);
+            logs.push(now);
+            likeTracker.set(key, logs);
+
+            /* Warn */
+            if (logs.length === WARNING_LIMIT && !warned.has(key)) {
+                warned.add(key);
+                enqueue(threadID, () =>
+                    api.sendMessage(
+                        `⚠ <@${senderID}> stop spamming "like" messages!`,
+                        threadID,
+                        { mentions: [{ id: senderID, tag: `<@${senderID}>` }] }
+                    )
+                );
+            }
+
+            /* Kick */
+            if (logs.length >= LIKE_LIMIT) {
+                const botID = api.getCurrentUserID();
+                const info = await api.getThreadInfo(threadID);
+
+                const isAdmin = info.adminIDs.some(a => a.id === botID);
+                const targetIsAdmin = info.adminIDs.some(a => a.id === senderID);
+
+                if (isAdmin && !targetIsAdmin) {
+                    enqueue(threadID, () =>
+                        api.removeUserFromGroup(senderID, threadID)
+                    );
+                }
+
+                likeTracker.delete(key);
+                warned.delete(key);
+            }
         }
-        likeSpam.delete(key);
-        warnedUsers.delete(key);
-      }
     }
-  }
 
-  // --- BOT AUTO NICKNAME ON JOIN ---
-  if (event.logMessageType === "log:subscribe") {
-    const botID = api.getCurrentUserID();
-    for (const user of event.logMessageData.addedParticipants) {
-      if (user.userFbId === botID) {
-        enqueue(threadID, () => api.changeNickname(BOT_NICKNAME, threadID, botID));
-      }
+    /* ---------- BOT AUTO NICK ---------- */
+    if (event.logMessageType === "log:subscribe") {
+        const botID = api.getCurrentUserID();
+        for (const u of event.logMessageData.addedParticipants) {
+            if (u.userFbId === botID) {
+                enqueue(threadID, () =>
+                    api.changeNickname(BOT_NICKNAME, threadID, botID)
+                );
+            }
+        }
     }
-  }
 
-  // --- GROUP LOCK / NICKNAME LOCK ---
-  const lock = groupLocks.get(threadID);
-  if (!lock) return;
-
-  // GROUP NAME AUTO-REVERT
-  if (event.logMessageType === "log:thread-name" && lock.groupName) {
-    const info = await api.getThreadInfo(threadID);
-    if (info.threadName !== lock.groupName) {
-      enqueue(threadID, () => api.setTitle(lock.groupName, threadID));
+    /* ---------- AUTO NICK NEW MEMBERS ---------- */
+    if (event.logMessageType === "log:subscribe") {
+        for (const u of event.logMessageData.addedParticipants) {
+            enqueue(threadID, () =>
+                api.changeNickname(LOCKED_NICKNAME, threadID, u.userFbId)
+            );
+        }
     }
-  }
 
-  // NICKNAME AUTO-REVERT
-  if (event.logMessageType === "log:user-nickname" && lock.nickname) {
-    enqueue(threadID, () =>
-      api.changeNickname(lock.nickname, threadID, event.logMessageData.participant_id)
-    );
-  }
-
-  // AUTO SET NICKNAME FOR NEW MEMBERS
-  if (event.logMessageType === "log:subscribe" && lock.nickname) {
-    for (const user of event.logMessageData.addedParticipants) {
-      enqueue(threadID, () =>
-        api.changeNickname(lock.nickname, threadID, user.userFbId)
-      );
+    /* ---------- NICKNAME LOCK ---------- */
+    if (event.logMessageType === "log:user-nickname") {
+        enqueue(threadID, () =>
+            api.changeNickname(
+                LOCKED_NICKNAME,
+                threadID,
+                event.logMessageData.participant_id
+            )
+        );
     }
-  }
+
+    /* ---------- GROUP NAME LOCK ---------- */
+    if (event.logMessageType === "log:thread-name") {
+        const info = await api.getThreadInfo(threadID);
+        if (info.threadName !== LOCKED_GROUP_NAME) {
+            enqueue(threadID, () =>
+                api.setTitle(LOCKED_GROUP_NAME, threadID)
+            );
+        }
+    }
 };
