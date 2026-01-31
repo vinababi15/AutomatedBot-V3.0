@@ -1,14 +1,15 @@
 module.exports.config = {
     name: "grouplock",
-    version: "1.2.0",
-    description: "Auto react, auto nickname, anti GC rename, anti like spam (EVENT)"
+    version: "1.3.0",
+    description: "Auto react, auto nick on join (once), bot nick, anti GC rename, anti like spam"
 };
 
 /* ================= SETTINGS ================= */
 
 const MEMBER_NICK = "owned by skye";
 const BOT_NICK = "skye was here";
-const REACTION = "👍";
+
+const REACTIONS = ["❤️", "👍", "😆", "🔥", "😍", "😎"];
 
 const LIKE_WARN = 3;
 const LIKE_KICK = 5;
@@ -16,9 +17,14 @@ const LIKE_TIME = 6000;
 
 /* ================= MEMORY ================= */
 
-const groupNames = new Map();      // threadID => last name
-const likeCount = new Map();       // threadID:userID => {count,time}
+const groupNames = new Map();          // threadID => last name
+const nickSet = new Set();             // threadID:userID
+const likeCount = new Map();           // spam tracker
 const warned = new Set();
+
+/* ================= HELPERS ================= */
+
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
 
 /* ================= EVENT ================= */
 
@@ -27,28 +33,28 @@ module.exports.handleEvent = async function ({ api, event }) {
     const senderID = event.senderID;
     const botID = api.getCurrentUserID();
 
-    /* ===== AUTO REACT (ALL MESSAGES, SELF LISTEN) ===== */
+    /* ========= AUTO REACT (RANDOM, ALL MEMBERS) ========= */
     if (
         event.type === "message" ||
         event.type === "message_reply"
     ) {
-        if (event.messageID) {
+        if (event.messageID && senderID !== botID) {
             api.setMessageReaction(
-                REACTION,
+                pick(REACTIONS),
                 event.messageID,
                 () => {},
-                true
+                true // self listen
             );
         }
     }
 
-    /* ===== STORE GROUP NAME (ON NORMAL MESSAGE) ===== */
+    /* ========= STORE ORIGINAL GROUP NAME ========= */
     if (!groupNames.has(threadID) && event.type === "message") {
         const info = await api.getThreadInfo(threadID);
         groupNames.set(threadID, info.threadName);
     }
 
-    /* ===== GROUP NAME LOCK + KICK ===== */
+    /* ========= GROUP NAME LOCK + KICK ========= */
     if (event.logMessageType === "log:thread-name") {
         const changerID = event.author;
         const info = await api.getThreadInfo(threadID);
@@ -60,10 +66,8 @@ module.exports.handleEvent = async function ({ api, event }) {
         }
 
         if (info.threadName !== oldName) {
-            // revert
             api.setTitle(oldName, threadID);
 
-            // kick if not admin
             const botAdmin = info.adminIDs.some(a => a.id === botID);
             const userAdmin = info.adminIDs.some(a => a.id === changerID);
 
@@ -73,12 +77,16 @@ module.exports.handleEvent = async function ({ api, event }) {
         }
     }
 
-    /* ===== AUTO SET NICKNAME WHEN MEMBER JOINS ===== */
+    /* ========= AUTO NICKNAME (ONCE PER JOIN) ========= */
     if (event.logMessageType === "log:subscribe") {
         const users = event.logMessageData.addedParticipants || [];
 
         for (const u of users) {
             const uid = u.userFbId;
+            const key = `${threadID}:${uid}`;
+
+            if (nickSet.has(key)) continue;
+            nickSet.add(key);
 
             setTimeout(() => {
                 if (uid === botID) {
@@ -86,21 +94,11 @@ module.exports.handleEvent = async function ({ api, event }) {
                 } else {
                     api.changeNickname(MEMBER_NICK, threadID, uid);
                 }
-            }, 2000); // REQUIRED delay
+            }, 2000);
         }
     }
 
-    /* ===== NICKNAME LOCK (REVERT) ===== */
-    if (event.logMessageType === "log:user-nickname") {
-        const targetID = event.logMessageData.participant_id;
-        if (!targetID || targetID === botID) return;
-
-        setTimeout(() => {
-            api.changeNickname(MEMBER_NICK, threadID, targetID);
-        }, 1500);
-    }
-
-    /* ===== LIKE MESSAGE ANTI SPAM ===== */
+    /* ========= LIKE MESSAGE ANTI SPAM ========= */
     if (event.type === "message" && event.body) {
         const msg = event.body.trim().toLowerCase();
         if (msg !== "like" && msg !== "👍") return;
