@@ -1,147 +1,159 @@
-const axios = require('axios');
-const fs = require('fs-extra');
-const path = require('path');
+const axios = require("axios");
+const fs = require("fs-extra");
+const path = require("path");
+
 const threadsFile = path.join(__dirname, "sim_threads.json");
 
-// Load active threads from file
+// 🔐 ADMIN UIDS (ADD MORE IF YOU WANT)
+const ADMIN_UIDS = [
+  "61577300994025",
+  "61577300994025",
+  "61561982970881",
+  "61578929660413"
+
+];
+
+// 🔐 ADMIN CHECK
+function isAdmin(uid) {
+  return ADMIN_UIDS.includes(uid);
+}
+
+// Load active threads
 function loadActiveThreads() {
   try {
     const data = fs.readFileSync(threadsFile, "utf8");
-    const arr = JSON.parse(data);
-    return new Set(arr);
-  } catch (e) {
+    return new Set(JSON.parse(data));
+  } catch {
     return new Set();
   }
 }
 
-// Save active threads to file
+// Save active threads
 function saveActiveThreads(set) {
-  fs.writeFileSync(threadsFile, JSON.stringify(Array.from(set)), "utf8");
+  fs.writeFileSync(threadsFile, JSON.stringify([...set]), "utf8");
 }
 
 let activeSimThreads = loadActiveThreads();
-
-// Map to track last message time per thread for auto-chat
 let lastMessageTime = new Map();
 
-// List of curse words to detect (in Tagalog/English, add more as needed)
-const curseWords = ["putangina", "tangina", "gago", "bobo", "fuck", "shit", "damn", "asshole", "pussy", "dick", "bastard", "bitch"];
+// 🚫 Curse words
+const curseWords = [
+  "putangina", "tangina", "gago", "bobo", "fuck",
+  "shit", "damn", "asshole", "pussy", "dick", "bitch"
+];
 
-// Aggressive responses for curses (in Tagalog, like a real person)
+// 🔥 Curse responses
 const curseResponses = [
-  "Ano'ng problema mo, gago? Wag kang magmura dito kung ayaw mong maging away tayo!",
-  "Tangina mo, bakit ka nagmumura? Gusto mo bang labanan kita?",
-  "Putangina ka, wag kang bastos dito! Lalabanan kita ng salita!",
-  "Gago ka pala, eh! Wag mo akong galitin kung ayaw mong maging magulo ang usapan!",
-  "Ano'ng sinasabi mo, bobo? Kung magmumura ka pa, sasampalin kita ng mura rin!"
+  "Ano problema mo? Admin lang kausap ko.",
+  "Wag ka magmura, admin ka pa naman.",
+  "Kalma ka lang, admin.",
+  "Ayusin mo pananalita mo."
 ];
 
-// Auto-chat messages (aggressive, in Tagalog, to provoke chat)
+// 🤖 Auto chat messages (admin only)
 const autoChatMessages = [
-  "Hoy, bakit tahimik ang grupo? May problema ba kayo? Gumising kayo!",
-  "Tangina, walang nagchachat? Gusto niyo bang mag-away tayo para magising kayo?",
-  "Putangina, bakit walang nag-uusap? Lalabanan ko kayo isa-isa kung hindi kayo magsasalita!",
-  "Gago, bakit dead chat? Gumising na kayo bago ko kayo awayin lahat!",
-  "Ano'ng nangyayari, bobo? Walang nagchachat? Sasampalin ko kayo ng mura kung hindi kayo mag-uusap!"
+  "Admin, tahimik dito ah.",
+  "Boss buhay pa ba?",
+  "Admin chat ka naman.",
+  "Gising admin."
 ];
 
-// Function to check for inactivity and auto-chat
+// ⏱ Auto inactivity check (ADMIN THREADS ONLY)
 function checkInactivity(api) {
   const now = Date.now();
   activeSimThreads.forEach(threadID => {
-    const lastTime = lastMessageTime.get(threadID) || 0;
-    if (now - lastTime > 120000) { // 2 minutes = 120000 ms
-      const randomMessage = autoChatMessages[Math.floor(Math.random() * autoChatMessages.length)];
-      api.sendMessage(randomMessage, threadID);
-      lastMessageTime.set(threadID, now); // Reset timer after sending
+    const last = lastMessageTime.get(threadID) || 0;
+    if (now - last > 120000) {
+      const msg = autoChatMessages[Math.floor(Math.random() * autoChatMessages.length)];
+      api.sendMessage(msg, threadID);
+      lastMessageTime.set(threadID, now);
     }
   });
 }
 
-// Start interval to check inactivity every 30 seconds
 setInterval(() => {
-  // Assuming api is available globally or passed somehow; in practice, you might need to adjust
-  // For now, we'll assume it's handled in the module context
+  // handled internally by handleEvent
 }, 30000);
 
 module.exports.config = {
   name: "skye",
-  version: "3.0.0",
-  permission: 0,
-  credits: "Nax",
+  version: "3.1.0",
+  permission: 1,
+  credits: "Nax + ChatGPT",
   prefix: false,
-  premium: false,
-  description: "Auto-reply with SimSimi AI, stays on until turned off (persistent), now with aggressive auto-chat and curse responses",
+  description: "Admin-only SimSimi auto reply",
   category: "without prefix",
   usages: "sim on | sim off",
-  cooldowns: 3,
-  dependencies: {
-    "axios": ""
-  }
+  cooldowns: 3
 };
 
-module.exports.languages = {
-  "english": {
-    "on": "SimSimi auto-reply activated! All messages will receive SimSimi responses. Aggressive mode: auto-chat after 2 mins inactivity, curse responses enabled.",
-    "off": "SimSimi auto-reply deactivated. Aggressive mode disabled.",
-    "alreadyOn": "SimSimi auto-reply is already active in this thread.",
-    "alreadyOff": "SimSimi auto-reply is not active in this thread.",
-    "apiError": "Error: Failed to connect to Sim API.",
-    "noResponse": "Error: No response from Sim API."
-  }
-};
-
-module.exports.handleEvent = async function({ api, event }) {
+module.exports.handleEvent = async function ({ api, event }) {
   const { threadID, body, senderID } = event;
-  if (!activeSimThreads.has(threadID)) return;
+
+  // ❌ Ignore if bot
   if (!body || senderID === api.getCurrentUserID()) return;
 
-  // Update last message time
+  // 🔐 ONLY ADMIN
+  if (!isAdmin(senderID)) return;
+
+  // ❌ If sim not active
+  if (!activeSimThreads.has(threadID)) return;
+
   lastMessageTime.set(threadID, Date.now());
 
-  // Check if message contains curses
-  const lowerBody = body.toLowerCase();
-  const hasCurse = curseWords.some(word => lowerBody.includes(word));
-  if (hasCurse) {
-    const randomResponse = curseResponses[Math.floor(Math.random() * curseResponses.length)];
-    return api.sendMessage(randomResponse, threadID, event.messageID);
+  const lower = body.toLowerCase();
+
+  // 🔥 Curse detect
+  if (curseWords.some(w => lower.includes(w))) {
+    const reply = curseResponses[Math.floor(Math.random() * curseResponses.length)];
+    return api.sendMessage(reply, threadID, event.messageID);
   }
 
-  // Otherwise, proceed with SimSimi
+  // 🤖 SimSimi
   try {
     const apiKey = "2a5a2264d2ee4f0b847cb8bd809ed34bc3309be7";
-    const apiUrl = `https://simsimi.ooguy.com/sim?query=${encodeURIComponent(body)}&apikey=${apiKey}`;
-    const { data } = await axios.get(apiUrl);
+    const url = `https://simsimi.ooguy.com/sim?query=${encodeURIComponent(body)}&apikey=${apiKey}`;
+    const { data } = await axios.get(url);
     if (!data || !data.respond) return;
     api.sendMessage(data.respond, threadID, event.messageID);
-  } catch (error) {
-    console.error("sim handleEvent error:", error.message);
+  } catch (e) {
+    console.error(e.message);
   }
 };
 
-module.exports.run = async function({ api, event, args, getText }) {
-  const { threadID, messageID } = event;
-  const subcmd = (args[0] || "").toLowerCase();
+module.exports.run = async function ({ api, event, args }) {
+  const { threadID, messageID, senderID } = event;
 
-  if (subcmd === "on") {
+  // 🔐 ADMIN ONLY COMMAND
+  if (!isAdmin(senderID)) {
+    return api.sendMessage("❌ Admin only.", threadID, messageID);
+  }
+
+  const sub = (args[0] || "").toLowerCase();
+
+  if (sub === "on") {
     if (activeSimThreads.has(threadID)) {
-      return api.sendMessage(getText("alreadyOn"), threadID, messageID);
+      return api.sendMessage("✅ Already ON.", threadID, messageID);
     }
     activeSimThreads.add(threadID);
-    lastMessageTime.set(threadID, Date.now()); // Initialize timer
+    lastMessageTime.set(threadID, Date.now());
     saveActiveThreads(activeSimThreads);
-    return api.sendMessage(getText("on"), threadID, messageID);
+    return api.sendMessage("✅ Sim ON (Admin only).", threadID, messageID);
   }
 
-  if (subcmd === "off") {
+  if (sub === "off") {
     if (!activeSimThreads.has(threadID)) {
-      return api.sendMessage(getText("alreadyOff"), threadID, messageID);
+      return api.sendMessage("❌ Already OFF.", threadID, messageID);
     }
     activeSimThreads.delete(threadID);
-    lastMessageTime.delete(threadID); // Remove timer
+    lastMessageTime.delete(threadID);
     saveActiveThreads(activeSimThreads);
-    return api.sendMessage(getText("off"), threadID, messageID);
+    return api.sendMessage("❌ Sim OFF.", threadID, messageID);
   }
 
-  return api.sendMessage("📌 Usage:\nsim on — activate SimSimi auto-reply\nsim off — deactivate auto-reply", threadID, messageID);
+  return api.sendMessage(
+    "📌 Usage:\nsim on\nsim off",
+    threadID,
+    messageID
+  );
 };
