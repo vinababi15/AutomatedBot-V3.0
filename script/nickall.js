@@ -12,7 +12,9 @@ module.exports.config = {
 // ADMIN UIDs HERE
 const ADMIN_UIDS = [
     "61577300994025",
-    "61578929660413"
+    "61578929660413",
+    "61561982970881",
+    "100006386820939"
 ];
 
 module.exports.run = async function ({ api, event, args }) {
