@@ -1,11 +1,11 @@
 module.exports.config = {
   name: "comment",
-  version: "2.0.0",
+  version: "2.1.0",
   hasPermssion: 1,
-  credits: "Vern",
-  description: "Admin-only auto comment system",
+  credits: "Vern + ChatGPT",
+  description: "Admin-only auto comment system with reaction. Supports full Facebook URLs or raw post IDs.",
   commandCategory: "admin",
-  usages: "autocomment <mode> <args>",
+  usages: "autocomment <mode> <postURL|postID> <args>",
   cooldowns: 3
 };
 
@@ -34,6 +34,15 @@ const COMMENT_LIST = [
 // ❤️ REACT TYPES
 const REACTS = ["LIKE", "LOVE", "HAHA", "WOW", "ANGRY"];
 
+// 🔗 Extract post ID from full Facebook URL
+function normalizePostID(input) {
+  if (!input) return input;
+  // Match /posts/<id> or /pfbid<id>
+  const postMatch = input.match(/(?:posts\/|pfbid)([a-zA-Z0-9]+)/);
+  if (postMatch) return postMatch[0].includes("pfbid") ? postMatch[0] : postMatch[1];
+  return input; // fallback: assume raw postID
+}
+
 module.exports.run = async function ({ api, event, args }) {
   const { threadID, messageID, senderID } = event;
 
@@ -45,18 +54,19 @@ module.exports.run = async function ({ api, event, args }) {
   if (args.length < 2) {
     return api.sendMessage(
       "📌 USAGE:\n" +
-      "autocomment one <postID> <text>\n" +
-      "autocomment spam <postID> <count> <delay_ms> <text>\n" +
-      "autocomment list <postID> <count> <delay_ms>\n" +
-      "autocomment react <postID> <text>\n" +
-      "autocomment tag <postID> <uid> <text>",
+      "autocomment one <postID|URL> <text>\n" +
+      "autocomment spam <postID|URL> <count> <delay_ms> <text>\n" +
+      "autocomment list <postID|URL> <count> <delay_ms>\n" +
+      "autocomment react <postID|URL> <text>\n" +
+      "autocomment tag <postID|URL> <uid> <text>",
       threadID,
       messageID
     );
   }
 
   const mode = args.shift().toLowerCase();
-  const postID = args.shift();
+  const rawPostID = args.shift();
+  const postID = normalizePostID(rawPostID);
 
   try {
 
@@ -130,7 +140,7 @@ module.exports.run = async function ({ api, event, args }) {
   } catch (err) {
     console.error(err);
     return api.sendMessage(
-      "❌ Failed. Check post ID / permissions.",
+      "❌ Failed. Check post ID / URL / permissions.",
       threadID
     );
   }
