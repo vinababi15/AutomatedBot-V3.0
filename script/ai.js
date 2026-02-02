@@ -5,7 +5,7 @@ module.exports.config = {
   version: "1.2.0",
   hasPermssion: 0, // everyone
   credits: "Vern",
-  description: "Chat with AI and describe photos fully customizable by user",
+  description: "Chat with AI (Gemini) and describe photos. Fully customizable prompt by users.",
   commandCategory: "fun",
   usages: "ai <prompt> or send a photo",
   cooldowns: 3
@@ -14,7 +14,7 @@ module.exports.config = {
 module.exports.run = async function({ api, event, args }) {
   const { threadID, messageID, attachments, body, senderName } = event;
 
-  let prompt = args.join(" ");
+  let prompt = args.join(" ").trim();
 
   // Check for image attachments
   if (attachments && attachments.length > 0) {
@@ -34,15 +34,13 @@ module.exports.run = async function({ api, event, args }) {
   }
 
   try {
-    // Gemini API expects JSON POST
-    const response = await axios.post("https://wudysoft.xyz/api/ai/gemini/v7", {
-      prompt: prompt,
-      // optional: you can add more parameters if supported like temperature, max_tokens, etc.
-    });
+    // Gemini API request (GET)
+    const url = `https://wudysoft.xyz/api/ai/gemini/v7?prompt=${encodeURIComponent(prompt)}`;
+    const { data } = await axios.get(url);
 
-    if (response.data && response.data.output) {
+    if (data && data.result) {
       return api.sendMessage(
-        `🤖 AI response for ${senderName}:\n${response.data.output}`,
+        `🤖 AI response for ${senderName}:\n${data.result}`,
         threadID,
         messageID
       );
