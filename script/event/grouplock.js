@@ -8,7 +8,7 @@ module.exports.config = {
 
 const MEMBER_NICK = "owned by skye";
 const BOT_NICK = "skye was here";
-const REACTIONS = ["❤️", "👍", "😆", "🔥", "😍", "😎"];
+const REACTIONS = ["😆"];
 
 const LIKE_WARN = 3;
 const LIKE_KICK = 5;
