@@ -1,159 +1,90 @@
-const axios = require("axios");
-const fs = require("fs-extra");
-const path = require("path");
-
+const axios = require('axios');
+const fs = require('fs-extra');
+const path = require('path');
 const threadsFile = path.join(__dirname, "sim_threads.json");
 
-// 🔐 ADMIN UIDS (ADD MORE IF YOU WANT)
-const ADMIN_UIDS = [
-  "61577300994025",
-  "61577300994025",
-  "61561982970881",
-  "61578929660413"
-
-];
-
-// 🔐 ADMIN CHECK
-function isAdmin(uid) {
-  return ADMIN_UIDS.includes(uid);
-}
-
-// Load active threads
+// Load active threads from file
 function loadActiveThreads() {
   try {
     const data = fs.readFileSync(threadsFile, "utf8");
-    return new Set(JSON.parse(data));
-  } catch {
+    const arr = JSON.parse(data);
+    return new Set(arr);
+  } catch (e) {
     return new Set();
   }
 }
 
-// Save active threads
+// Save active threads to file
 function saveActiveThreads(set) {
-  fs.writeFileSync(threadsFile, JSON.stringify([...set]), "utf8");
+  fs.writeFileSync(threadsFile, JSON.stringify(Array.from(set)), "utf8");
 }
 
 let activeSimThreads = loadActiveThreads();
-let lastMessageTime = new Map();
-
-// 🚫 Curse words
-const curseWords = [
-  "putangina", "tangina", "gago", "bobo", "fuck",
-  "shit", "damn", "asshole", "pussy", "dick", "bitch"
-];
-
-// 🔥 Curse responses
-const curseResponses = [
-  "Ano problema mo? Admin lang kausap ko.",
-  "Wag ka magmura, admin ka pa naman.",
-  "Kalma ka lang, admin.",
-  "Ayusin mo pananalita mo."
-];
-
-// 🤖 Auto chat messages (admin only)
-const autoChatMessages = [
-  "Admin, tahimik dito ah.",
-  "Boss buhay pa ba?",
-  "Admin chat ka naman.",
-  "Gising admin."
-];
-
-// ⏱ Auto inactivity check (ADMIN THREADS ONLY)
-function checkInactivity(api) {
-  const now = Date.now();
-  activeSimThreads.forEach(threadID => {
-    const last = lastMessageTime.get(threadID) || 0;
-    if (now - last > 120000) {
-      const msg = autoChatMessages[Math.floor(Math.random() * autoChatMessages.length)];
-      api.sendMessage(msg, threadID);
-      lastMessageTime.set(threadID, now);
-    }
-  });
-}
-
-setInterval(() => {
-  // handled internally by handleEvent
-}, 30000);
 
 module.exports.config = {
   name: "skye",
-  version: "3.1.0",
-  permission: 1,
-  credits: "Nax + ChatGPT",
+  version: "3.0.0",
+  permission: 0,
+  credits: "Nax",
   prefix: false,
-  description: "Admin-only SimSimi auto reply",
+  premium: false,
+  description: "Auto-reply with SimSimi AI, stays on until turned off (persistent)",
   category: "without prefix",
   usages: "sim on | sim off",
-  cooldowns: 3
+  cooldowns: 3,
+  dependencies: {
+    "axios": ""
+  }
 };
 
-module.exports.handleEvent = async function ({ api, event }) {
-  const { threadID, body, senderID } = event;
+module.exports.languages = {
+  "english": {
+    "on": "SimSimi auto-reply activated! All messages will receive SimSimi responses.",
+    "off": "SimSimi auto-reply deactivated.",
+    "alreadyOn": "SimSimi auto-reply is already active in this thread.",
+    "alreadyOff": "SimSimi auto-reply is not active in this thread.",
+    "apiError": "Error: Failed to connect to Sim API.",
+    "noResponse": "Error: No response from Sim API."
+  }
+};
 
-  // ❌ Ignore if bot
+module.exports.handleEvent = async function({ api, event }) {
+  const { threadID, body, senderID } = event;
+  if (!activeSimThreads.has(threadID)) return;
   if (!body || senderID === api.getCurrentUserID()) return;
 
-  // 🔐 ONLY ADMIN
-  if (!isAdmin(senderID)) return;
-
-  // ❌ If sim not active
-  if (!activeSimThreads.has(threadID)) return;
-
-  lastMessageTime.set(threadID, Date.now());
-
-  const lower = body.toLowerCase();
-
-  // 🔥 Curse detect
-  if (curseWords.some(w => lower.includes(w))) {
-    const reply = curseResponses[Math.floor(Math.random() * curseResponses.length)];
-    return api.sendMessage(reply, threadID, event.messageID);
-  }
-
-  // 🤖 SimSimi
   try {
     const apiKey = "2a5a2264d2ee4f0b847cb8bd809ed34bc3309be7";
-    const url = `https://simsimi.ooguy.com/sim?query=${encodeURIComponent(body)}&apikey=${apiKey}`;
-    const { data } = await axios.get(url);
+    const apiUrl = `https://simsimi.ooguy.com/sim?query=${encodeURIComponent(body)}&apikey=${apiKey}`;
+    const { data } = await axios.get(apiUrl);
     if (!data || !data.respond) return;
     api.sendMessage(data.respond, threadID, event.messageID);
-  } catch (e) {
-    console.error(e.message);
+  } catch (error) {
+    console.error("sim handleEvent error:", error.message);
   }
 };
 
-module.exports.run = async function ({ api, event, args }) {
-  const { threadID, messageID, senderID } = event;
+module.exports.run = async function({ api, event, args, getText }) {
+  const { threadID, messageID } = event;
+  const subcmd = (args[0] || "").toLowerCase();
 
-  // 🔐 ADMIN ONLY COMMAND
-  if (!isAdmin(senderID)) {
-    return api.sendMessage("❌ Admin only.", threadID, messageID);
-  }
-
-  const sub = (args[0] || "").toLowerCase();
-
-  if (sub === "on") {
+  if (subcmd === "on") {
     if (activeSimThreads.has(threadID)) {
-      return api.sendMessage("✅ Already ON.", threadID, messageID);
+      return api.sendMessage(getText("alreadyOn"), threadID, messageID);
     }
     activeSimThreads.add(threadID);
-    lastMessageTime.set(threadID, Date.now());
     saveActiveThreads(activeSimThreads);
-    return api.sendMessage("✅ Sim ON (Admin only).", threadID, messageID);
+    return api.sendMessage(getText("on"), threadID, messageID);
   }
 
-  if (sub === "off") {
+  if (subcmd === "off") {
     if (!activeSimThreads.has(threadID)) {
-      return api.sendMessage("❌ Already OFF.", threadID, messageID);
+      return api.sendMessage(getText("alreadyOff"), threadID, messageID);
     }
     activeSimThreads.delete(threadID);
-    lastMessageTime.delete(threadID);
     saveActiveThreads(activeSimThreads);
-    return api.sendMessage("❌ Sim OFF.", threadID, messageID);
+    return api.sendMessage(getText("off"), threadID, messageID);
   }
 
-  return api.sendMessage(
-    "📌 Usage:\nsim on\nsim off",
-    threadID,
-    messageID
-  );
+  return api.sendMessage("📌 Usage:\nsim on — activate SimSimi auto-reply\nsim off — deactivate auto-reply", threadID, messageID);
 };
