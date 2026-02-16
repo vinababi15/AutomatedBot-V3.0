@@ -21,7 +21,7 @@
     /* ===== NAVBAR ===== */
     .navbar {
       background: rgba(0, 0, 0, 0.9);
-      border-bottom: 1px solid #222;
+      border-bottom: 1px solid #2d0055;
     }
 
     .navbar-brand,
@@ -29,9 +29,14 @@
       color: #e0e0e0 !important;
     }
 
+    .nav-link i {
+      margin-right: 5px;
+      color: #b266ff;
+    }
+
     .dropdown-menu {
       background: #000;
-      border: 1px solid #222;
+      border: 1px solid #2d0055;
     }
 
     .dropdown-item {
@@ -39,20 +44,21 @@
     }
 
     .dropdown-item:hover {
-      background: #111;
+      background: #140022;
     }
 
     /* ===== CARDS ===== */
     .glass-card {
       background: rgba(0, 0, 0, 0.75);
-      border: 1px solid #222;
+      border: 1px solid #2d0055;
       border-radius: 14px;
       padding: 22px;
       margin-bottom: 25px;
+      box-shadow: 0 0 15px rgba(142, 45, 226, 0.15);
     }
 
     h1 {
-      color: #fff;
+      color: #b266ff;
       font-size: 22px;
       text-align: center;
       margin-bottom: 15px;
@@ -80,9 +86,9 @@
     input:focus,
     textarea:focus {
       background-color: rgba(0, 0, 0, 0.7) !important;
-      border-color: #555 !important;
+      border-color: #8e2de2 !important;
       outline: none;
-      box-shadow: none;
+      box-shadow: 0 0 8px rgba(142, 45, 226, 0.6);
     }
 
     /* ===== GIF BACKGROUND ===== */
@@ -95,27 +101,36 @@
       backdrop-filter: brightness(0.8);
     }
 
-    /* ===== BUTTONS ===== */
+    /* ===== BUTTONS (PURPLE THEME) ===== */
     .btn-primary {
-      background: #111;
-      border: 1px solid #333;
+      background: linear-gradient(135deg, #6a00ff, #8e2de2);
+      border: none;
       color: #fff;
       font-weight: 600;
+      border-radius: 8px;
+      padding: 8px 18px;
+      transition: 0.3s ease;
+      box-shadow: 0 0 10px rgba(142, 45, 226, 0.4);
+    }
+
+    .btn-primary i {
+      margin-right: 6px;
     }
 
     .btn-primary:hover {
-      background: #1a1a1a;
-      border-color: #555;
+      background: linear-gradient(135deg, #7b1fff, #a64dff);
+      transform: translateY(-2px);
+      box-shadow: 0 0 15px rgba(142, 45, 226, 0.6);
     }
 
     .btn-primary:disabled {
-      background: #050505;
-      border-color: #222;
-      color: #555;
+      background: #2a003f;
+      color: #888;
+      box-shadow: none;
     }
 
     hr {
-      border-top: 1px solid #222;
+      border-top: 1px solid #2d0055;
     }
 
     /* ===== FOOTER ===== */
@@ -132,7 +147,9 @@
 
   <!-- NAVBAR -->
   <nav class="navbar navbar-expand-lg navbar-dark px-4 my-3">
-    <a class="navbar-brand" href="#">Messenger Automated Bot</a>
+    <a class="navbar-brand" href="#">
+      <i class="fas fa-robot"></i> Messenger Automated Bot
+    </a>
 
     <button
       class="navbar-toggler"
@@ -146,24 +163,30 @@
       <ul class="navbar-nav">
 
         <li class="nav-item">
-          <a class="nav-link" href="/">Home</a>
+          <a class="nav-link" href="/">
+            <i class="fas fa-home"></i> Home
+          </a>
         </li>
 
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
-            Features
+            <i class="fas fa-layer-group"></i> Features
           </a>
           <div class="dropdown-menu">
             <a class="dropdown-item" href="https://www.facebook.com/notfound500" target="_blank">
-              Admin
+              <i class="fas fa-user-shield"></i> Admin
             </a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="/step_by_step_guide">Guide</a>
+            <a class="dropdown-item" href="/step_by_step_guide">
+              <i class="fas fa-book"></i> Guide
+            </a>
           </div>
         </li>
 
         <li class="nav-item">
-          <a class="nav-link" href="online_user">Active</a>
+          <a class="nav-link" href="online_user">
+            <i class="fas fa-signal"></i> Active
+          </a>
         </li>
 
       </ul>
@@ -174,7 +197,7 @@
   <div class="container">
 
     <div class="glass-card">
-      <h1>APPSTATE</h1>
+      <h1><i class="fas fa-file-code"></i> APPSTATE</h1>
       <form id="json-form" onsubmit="submitForm(event)">
         <textarea
           id="json-data"
@@ -184,30 +207,30 @@
     </div>
 
     <div class="glass-card">
-      <h1>TERMS</h1>
+      <h1><i class="fas fa-scroll"></i> TERMS</h1>
       <p>* Bot stays online until password changes.</p>
       <p>* Never share cookies.</p>
       <p>* Use dummy accounts.</p>
     </div>
 
     <div class="glass-card" id="listOfCommands">
-      <h1>COMMANDS</h1>
+      <h1><i class="fas fa-terminal"></i> COMMANDS</h1>
       <button class="btn btn-primary" onclick="selectAllCommands()">
-        Select all commands
+        <i class="fas fa-check-double"></i> Select All Commands
       </button>
       <hr>
     </div>
 
     <div class="glass-card" id="listOfCommandsEvent">
-      <h1>EVENTS</h1>
+      <h1><i class="fas fa-bolt"></i> EVENTS</h1>
       <button class="btn btn-primary" onclick="selectAllEvents()">
-        Select all events
+        <i class="fas fa-bolt"></i> Select All Events
       </button>
       <hr>
     </div>
 
     <div class="glass-card" id="prefixOfCommands">
-      <h1>PREFIX</h1>
+      <h1><i class="fas fa-code"></i> PREFIX</h1>
       <input
         type="text"
         id="inputOfPrefix"
@@ -217,7 +240,7 @@
     </div>
 
     <div class="glass-card" id="adminOfCommands">
-      <h1>ADMIN UID</h1>
+      <h1><i class="fas fa-user-cog"></i> ADMIN UID</h1>
       <input type="text" id="inputOfAdmin" class="form-control" />
       <hr>
     </div>
@@ -232,7 +255,7 @@
       id="submitButton"
       onclick="State()"
       disabled>
-      Submit
+      <i class="fas fa-paper-plane"></i> Submit
     </button>
 
     <div id="result" class="text-center mt-4" style="display:none;"></div>
