@@ -20,7 +20,7 @@
     /* NAVBAR */
     .navbar {
       background: #000 !important;
-      border-bottom: 1px solid #222;
+      border-bottom: 1px solid #2d0055;
     }
 
     .navbar-brand,
@@ -28,13 +28,18 @@
       color: #eee !important;
     }
 
+    .nav-link i {
+      margin-right: 6px;
+      color: #b266ff;
+    }
+
     .nav-link:hover {
-      color: #aaa !important;
+      color: #b266ff !important;
     }
 
     .dropdown-menu {
       background: #000;
-      border: 1px solid #222;
+      border: 1px solid #2d0055;
     }
 
     .dropdown-item {
@@ -42,39 +47,41 @@
     }
 
     .dropdown-item:hover {
-      background: #111;
+      background: #140022;
       color: #fff;
     }
 
     h1 {
-      color: #fff;
-      font-size: 20px;
-      margin-top: 15px;
+      color: #b266ff;
+      font-size: 22px;
+      margin-top: 20px;
+      font-weight: 600;
     }
 
     /* USER CARD */
     .user-card {
       display: flex;
       align-items: center;
-      margin-bottom: 12px;
-      border: 1px solid #333;
-      border-radius: 10px;
-      padding: 8px;
+      margin-bottom: 14px;
+      border: 1px solid #2d0055;
+      border-radius: 12px;
+      padding: 10px;
       width: 100%;
-      background: #000;
-      animation: glow 3s infinite alternate;
+      background: rgba(20, 0, 40, 0.4);
+      box-shadow: 0 0 12px rgba(142, 45, 226, 0.2);
+      transition: 0.3s ease;
     }
 
-    @keyframes glow {
-      from { border-color: #111; }
-      to { border-color: #fff; }
+    .user-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 18px rgba(142, 45, 226, 0.4);
     }
 
     .user-card img {
       max-width: 70px;
       border-radius: 10px;
-      margin-right: 10px;
-      border: 1px solid #222;
+      margin-right: 12px;
+      border: 1px solid #2d0055;
       background: #000;
     }
 
@@ -90,7 +97,6 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      text-align: start;
     }
 
     .user-info p {
@@ -100,19 +106,27 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      text-align: start;
     }
 
     .uptime-user {
-      color: #aaa;
+      color: #b266ff;
+      font-weight: 500;
     }
+
+    .status-title i {
+      margin-right: 8px;
+      color: #b266ff;
+    }
+
   </style>
 </head>
 
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-dark">
-  <a class="navbar-brand" href="#">Active</a>
+  <a class="navbar-brand" href="#">
+    <i class="fas fa-signal"></i> Active
+  </a>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
     <span class="navbar-toggler-icon"></span>
@@ -121,17 +135,27 @@
   <div class="collapse navbar-collapse justify-content-end" id="navbarNav" style="margin-right:80px;">
     <ul class="navbar-nav">
       <li class="nav-item active">
-        <a class="nav-link" href="#">Active</a>
+        <a class="nav-link" href="#">
+          <i class="fas fa-circle-dot"></i> Active
+        </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/">Home</a>
+        <a class="nav-link" href="/">
+          <i class="fas fa-home"></i> Home
+        </a>
       </li>
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Features</a>
+        <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
+          <i class="fas fa-layer-group"></i> Features
+        </a>
         <div class="dropdown-menu">
-                      <a class="dropdown-item" href="https://www.facebook.com/notfound500" target="_blank">
+          <a class="dropdown-item" href="https://www.facebook.com/notfound500" target="_blank">
+            <i class="fas fa-user-shield"></i> Admin
+          </a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="/step_by_step_guide">Step-By-Step Guide</a>
+          <a class="dropdown-item" href="/step_by_step_guide">
+            <i class="fas fa-book"></i> Step-By-Step Guide
+          </a>
         </div>
       </li>
     </ul>
@@ -140,7 +164,9 @@
 
 <div class="container">
   <div class="row">
-    <h1 class="col text-start">Current Online:</h1>
+    <h1 class="col status-title">
+      <i class="fas fa-users"></i> Current Online:
+    </h1>
   </div>
   <div class="row" id="user_online"></div>
 </div>
@@ -167,14 +193,14 @@ async function listOfAi() {
       userInfo.className = 'user-info';
 
       const userName = document.createElement('h4');
-      userName.textContent = name;
+      userName.innerHTML = `<i class="fas fa-user-circle"></i> ${name}`;
 
       const profileLink = document.createElement('p');
-      profileLink.innerHTML = `${profileUrl}`;
+      profileLink.innerHTML = profileUrl;
 
       const uptimeUser = document.createElement('p');
       uptimeUser.className = 'uptime-user';
-      uptimeUser.innerHTML = `Uptime: ${timeFormat(time)}`;
+      uptimeUser.innerHTML = `<i class="fas fa-clock"></i> Uptime: ${timeFormat(time)}`;
 
       userInfo.appendChild(userName);
       userInfo.appendChild(profileLink);
@@ -199,7 +225,7 @@ async function listOfAi() {
 
 function updateTimer(userCard, currentTime) {
   const uptimeUser = userCard.querySelector('.uptime-user');
-  uptimeUser.textContent = `Uptime: ${timeFormat(currentTime)}`;
+  uptimeUser.innerHTML = `<i class="fas fa-clock"></i> Uptime: ${timeFormat(currentTime)}`;
 }
 
 function timeFormat(currentTime) {
