@@ -20,7 +20,7 @@
     /* NAVBAR */
     .navbar {
       background: #000 !important;
-      border-bottom: 1px solid #222;
+      border-bottom: 1px solid #2d0055;
     }
 
     .navbar-brand,
@@ -28,13 +28,18 @@
       color: #eee !important;
     }
 
+    .nav-link i {
+      margin-right: 6px;
+      color: #b266ff;
+    }
+
     .nav-link:hover {
-      color: #aaa !important;
+      color: #b266ff !important;
     }
 
     .dropdown-menu {
       background: #000;
-      border: 1px solid #222;
+      border: 1px solid #2d0055;
     }
 
     .dropdown-item {
@@ -42,15 +47,16 @@
     }
 
     .dropdown-item:hover {
-      background: #111;
+      background: #140022;
       color: #fff;
     }
 
     /* CONTENT */
     h1 {
-      color: #fff;
-      font-size: 20px;
-      margin-top: 20px;
+      color: #b266ff;
+      font-size: 22px;
+      margin-top: 25px;
+      font-weight: 600;
     }
 
     p {
@@ -60,21 +66,35 @@
     }
 
     a {
-      color: #4da6ff;
+      color: #b266ff;
     }
 
     a:hover {
-      color: #80c1ff;
+      color: #d1a3ff;
       text-decoration: none;
     }
 
     img {
-      border: 1px solid #222;
+      border: 1px solid #2d0055;
       background: #000;
+      box-shadow: 0 0 12px rgba(142, 45, 226, 0.25);
     }
 
     .container {
       padding-bottom: 40px;
+    }
+
+    .step-number {
+      color: #b266ff;
+      font-weight: 600;
+    }
+
+    .note-box {
+      border: 1px solid #2d0055;
+      padding: 20px;
+      border-radius: 12px;
+      background: rgba(20, 0, 40, 0.4);
+      box-shadow: 0 0 15px rgba(142, 45, 226, 0.15);
     }
   </style>
 </head>
@@ -82,7 +102,9 @@
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-dark">
-  <a class="navbar-brand" href="#">Step-By-Step Guide</a>
+  <a class="navbar-brand" href="#">
+    <i class="fas fa-book-open"></i> Step-By-Step Guide
+  </a>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
     <span class="navbar-toggler-icon"></span>
@@ -91,21 +113,33 @@
   <div class="collapse navbar-collapse justify-content-end" id="navbarNav" style="margin-right:70px;">
     <ul class="navbar-nav">
       <li class="nav-item active">
-        <a class="nav-link" href="#">Step-By-Step Guide</a>
+        <a class="nav-link" href="#">
+          <i class="fas fa-list-ol"></i> Guide
+        </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/">Home</a>
+        <a class="nav-link" href="/">
+          <i class="fas fa-home"></i> Home
+        </a>
       </li>
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Features</a>
+        <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
+          <i class="fas fa-layer-group"></i> Features
+        </a>
         <div class="dropdown-menu">
-          <a class="dropdown-item" href="https://www.facebook.com/notfound500" target="_blank">Admin</a>
+          <a class="dropdown-item" href="https://www.facebook.com/notfound500" target="_blank">
+            <i class="fas fa-user-shield"></i> Admin
+          </a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="/step_by_step_guide">Step-By-Step Guide</a>
+          <a class="dropdown-item" href="/step_by_step_guide">
+            <i class="fas fa-book"></i> Step-By-Step Guide
+          </a>
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="online_user">Active</a>
+        <a class="nav-link" href="online_user">
+          <i class="fas fa-signal"></i> Active
+        </a>
       </li>
     </ul>
   </div>
@@ -113,58 +147,60 @@
 
 <div class="container">
 
-<h1 class="text-center">Step-By-Step Guide</h1>
+<h1 class="text-center"><i class="fas fa-book-open"></i> Step-By-Step Guide</h1>
 
-<p>1. Install the Kiwi Browser from the Google Play Store and launch it.</p>
+<p><span class="step-number">1.</span> Install the Kiwi Browser from the Google Play Store and launch it.</p>
 <img src="image/guide_1.jpeg" width="300" height="200" class="d-block mx-auto rounded my-2">
 
-<p>2. Open search and go to:
-<a href="https://github.com/c3cbot/c3c-fbstate/archive/refs/tags/1.5.zip">https://github.com/c3cbot/c3c-fbstate/archive/refs/tags/1.5.zip</a></p>
+<p><span class="step-number">2.</span> Open search and go to:
+<a href="https://github.com/c3cbot/c3c-fbstate/archive/refs/tags/1.5.zip">Download Extension</a></p>
 <img src="image/guide_2.jpeg" width="300" height="200" class="d-block mx-auto rounded my-2">
 
-<p>3. Download the file.</p>
+<p><span class="step-number">3.</span> Download the file.</p>
 <img src="image/guide_3.jpeg" width="300" height="200" class="d-block mx-auto rounded my-2">
 
-<p>4. Open Extensions from the menu.</p>
+<p><span class="step-number">4.</span> Open Extensions from the menu.</p>
 <img src="image/guide_4.jpeg" width="300" height="200" class="d-block mx-auto rounded my-2">
 
-<p>5. Enable Developer Mode and add the extension.</p>
+<p><span class="step-number">5.</span> Enable Developer Mode and add the extension.</p>
 <img src="image/guide_5.jpeg" width="300" height="200" class="d-block mx-auto rounded my-2">
 
-<p>6. Select the downloaded zip file.</p>
+<p><span class="step-number">6.</span> Select the downloaded zip file.</p>
 <img src="image/guide_6.jpeg" width="300" height="200" class="d-block mx-auto rounded my-2">
 
-<p>7. Activate C3C fbstate.</p>
+<p><span class="step-number">7.</span> Activate C3C fbstate.</p>
 <img src="image/guide_7.jpeg" width="300" height="200" class="d-block mx-auto rounded my-2">
 
-<p>8. Login to Facebook.</p>
+<p><span class="step-number">8.</span> Login to Facebook.</p>
 <img src="image/guide_8.jpeg" width="300" height="200" class="d-block mx-auto rounded my-2">
 
-<p>9. Open C3C fbstate from menu.</p>
+<p><span class="step-number">9.</span> Open C3C fbstate from menu.</p>
 <img src="image/guide_9.jpeg" width="300" height="200" class="d-block mx-auto rounded my-2">
 
-<p>10. Click Copy Clipboard.</p>
+<p><span class="step-number">10.</span> Click Copy Clipboard.</p>
 <img src="image/guide_10.jpeg" width="300" height="200" class="d-block mx-auto rounded my-2">
 
-<p>11. Paste cookies at
-<a href="https://auto-bot-soyeon.onrender.com">https://auto-bot-soyeon.onrender.com</a></p>
+<p><span class="step-number">11.</span> Paste cookies at
+<a href="https://auto-bot-soyeon.onrender.com">Bot Website</a></p>
 <img src="image/guide_11.jpeg" width="300" height="200" class="d-block mx-auto rounded my-2">
 
-<p>12. Accept terms and submit.</p>
+<p><span class="step-number">12.</span> Accept terms and submit.</p>
 <img src="image/guide_12.jpeg" width="300" height="200" class="d-block mx-auto rounded my-2">
 
-<p>13. Type <b>ai</b> to verify bot is working.</p>
+<p><span class="step-number">13.</span> Type <b>ai</b> to verify bot is working.</p>
 <img src="image/guide_13.jpeg" width="300" height="200" class="d-block mx-auto rounded my-2">
 
-<h1 class="text-center">Note</h1>
+<h1 class="text-center"><i class="fas fa-triangle-exclamation"></i> Note</h1>
 
+<div class="note-box">
 <p>• Unlock account if login fails.</p>
 <p>• Don’t login elsewhere.</p>
 <p>• Don’t change password while active.</p>
 <p>• We are not responsible for bans or locks.</p>
 <p>• Logout (not delete appstate) to register another bot.</p>
+</div>
 
-<img src="image/guide_16.jpeg" width="300" height="200" class="d-block mx-auto rounded my-2">
+<img src="image/guide_16.jpeg" width="300" height="200" class="d-block mx-auto rounded my-3">
 
 </div>
 
