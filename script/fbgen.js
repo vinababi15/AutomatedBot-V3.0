@@ -45,40 +45,50 @@ module.exports.run = async function ({ api, event, args }) {
       console.log(`Generated temp email: ${tempEmail}`);
 
       // Step 2: Register Facebook account using the generated email
-      const registerResponse = await axios.post(
-        "https://autocreate-account-api.onrender.com/register",
-        {
-          email: tempEmail,
-          password: "yasis123", // Custom password
+      try {
+        const registerResponse = await axios.post(
+          "https://autocreate-account-api.onrender.com/register",
+          {
+            email: tempEmail,
+            password: "yasis123", // Custom password
+          }
+        );
+
+        if (!registerResponse.data) {
+          throw new Error("Failed to register Facebook account.");
         }
-      );
-      if (!registerResponse.data) {
-        throw new Error("Failed to register Facebook account.");
+        const accountInfo = registerResponse.data;
+        console.log(`Account registered: ${accountInfo.username}`);
+
+        // Step 3: Fetch OTP from the temporary inbox
+        const inboxResponse = await axios.get(
+          `https://vern-rest-api.vercel.app/api/tempmail?email=${tempEmail}`
+        );
+        if (!inboxResponse.data.otp) {
+          throw new Error("OTP not found.");
+        }
+        const otp = inboxResponse.data.otp;
+        console.log(`OTP received: ${otp}`);
+
+        // Step 4: You can add logic to send OTP and finalize registration if required.
+        // For now, we assume that the account is generated successfully once OTP is fetched.
+
+        accountDetails.push({
+          email: tempEmail,
+          username: accountInfo.username,
+          password: "yasis123", // Custom password
+          accountId: accountInfo.accountId,
+          otp,
+          link: `https://facebook.com/${accountInfo.username}`,
+        });
+      } catch (registerErr) {
+        console.error(`Account registration failed: ${registerErr.message}`);
+        return api.sendMessage(
+          `❌ Account creation failed for ${tempEmail}. Error: ${registerErr.message}`,
+          threadID,
+          messageID
+        );
       }
-      const accountInfo = registerResponse.data;
-      console.log(`Account registered: ${accountInfo.username}`);
-
-      // Step 3: Fetch OTP from the temporary inbox
-      const inboxResponse = await axios.get(
-        `https://vern-rest-api.vercel.app/api/tempmail?email=${tempEmail}`
-      );
-      if (!inboxResponse.data.otp) {
-        throw new Error("OTP not found.");
-      }
-      const otp = inboxResponse.data.otp;
-      console.log(`OTP received: ${otp}`);
-
-      // Step 4: You can add logic to send OTP and finalize registration if required.
-      // For now, we assume that the account is generated successfully once OTP is fetched.
-
-      accountDetails.push({
-        email: tempEmail,
-        username: accountInfo.username,
-        password: "yasis123", // Custom password
-        accountId: accountInfo.accountId,
-        otp,
-        link: `https://facebook.com/${accountInfo.username}`,
-      });
     }
 
     // Step 5: Send the response with the details of the generated accounts
