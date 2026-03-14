@@ -32,11 +32,17 @@ module.exports.run = async function ({ api, event, args }) {
 
     // Create accounts in a loop
     for (let i = 0; i < numAccounts; i++) {
+      console.log(`Generating account ${i + 1}...`);
+
       // Step 1: Generate a temporary email using the tempmail API
       const emailResponse = await axios.get(
         "https://vern-rest-api.vercel.app/api/tempmail"
       );
+      if (!emailResponse.data.email) {
+        throw new Error("Failed to generate temporary email.");
+      }
       const tempEmail = emailResponse.data.email;
+      console.log(`Generated temp email: ${tempEmail}`);
 
       // Step 2: Register Facebook account using the generated email
       const registerResponse = await axios.post(
@@ -46,19 +52,21 @@ module.exports.run = async function ({ api, event, args }) {
           password: "yasis123", // Custom password
         }
       );
-
+      if (!registerResponse.data) {
+        throw new Error("Failed to register Facebook account.");
+      }
       const accountInfo = registerResponse.data;
+      console.log(`Account registered: ${accountInfo.username}`);
 
       // Step 3: Fetch OTP from the temporary inbox
       const inboxResponse = await axios.get(
         `https://vern-rest-api.vercel.app/api/tempmail?email=${tempEmail}`
       );
-
-      const otp = inboxResponse.data.otp;
-
-      if (!otp) {
+      if (!inboxResponse.data.otp) {
         throw new Error("OTP not found.");
       }
+      const otp = inboxResponse.data.otp;
+      console.log(`OTP received: ${otp}`);
 
       // Step 4: You can add logic to send OTP and finalize registration if required.
       // For now, we assume that the account is generated successfully once OTP is fetched.
@@ -88,7 +96,7 @@ module.exports.run = async function ({ api, event, args }) {
     // Send the formatted account details back to the user
     return api.sendMessage(message, threadID, messageID);
   } catch (err) {
-    console.error("Error generating accounts:", err);
+    console.error("Error generating accounts:", err.message);
     return api.sendMessage(
       `❌ Failed to generate accounts. Error: ${err.message}`,
       threadID,
